@@ -17,7 +17,10 @@ public class Snake { // square eggs fill space much better
 	private double x, y;
 	private Color color;
 	Path head;
-	boolean turning = false;
+	boolean turningL = false;
+	boolean turningR = false;
+	boolean turningD = false;
+	boolean turningU = false;
 	public Snake(double x, double y, Color color)
 	{
 		this.color = color;
@@ -28,9 +31,9 @@ public class Snake { // square eggs fill space much better
 //		Tail of the snake. Only one and with fixed position
 		Polygon tail = new Polygon();
 		tail.getPoints().addAll(new Double[]{
-	            0.0, SIZE,
-	            SIZE, SIZE,
-	            (SIZE)/2, 2*SIZE 
+	            0.0, 2*SIZE,
+	            SIZE, 2*SIZE,
+	            (SIZE)/2, 3*SIZE 
 	    });
 		tail.setFill(Color.BLACK);
 		translatePosition(tail);
@@ -38,30 +41,30 @@ public class Snake { // square eggs fill space much better
 
 //		First element of snake body
 		Rectangle fBody = addBody();
-		translatePosition(fBody);
+		translatePositionBody(fBody, 0, SIZE);
 		allParts.add(fBody);
 		
 //		Head of the snake
 		head = new Path();
 
 		MoveTo moveTo = new MoveTo();
-		moveTo.setX(0.0f);
-		moveTo.setY(0.0f);
+		moveTo.setX(0);
+		moveTo.setY(SIZE);
 
 		HLineTo hLineTo = new HLineTo();
 		hLineTo.setX(SIZE);
 		
 		QuadCurveTo quadTo = new QuadCurveTo();
 		quadTo.setControlX(SIZE);
-		quadTo.setControlY(-SIZE*0.9);
+		quadTo.setControlY(0.1);
 		quadTo.setX(SIZE/2);
-		quadTo.setY(-SIZE);
+		quadTo.setY(0);
 		
 		QuadCurveTo quadTo2 = new QuadCurveTo();
 		quadTo2.setControlX(0);
-		quadTo2.setControlY(-SIZE*0.9);	
+		quadTo2.setControlY(0.9);	
 		quadTo2.setX(0);
-		quadTo2.setY(0);
+		quadTo2.setY(SIZE);
 		
 		head.getElements().add(moveTo);
 		head.getElements().add(hLineTo);
@@ -69,6 +72,10 @@ public class Snake { // square eggs fill space much better
 		head.getElements().add(quadTo2);
 		
 		head.setFill(Color.RED);
+		head.setStroke(Color.BLACK);
+		head.setStrokeWidth(3.0);
+		head.setStrokeLineCap(StrokeLineCap.ROUND);
+		
 		translatePosition(head);
 		allParts.add(head);	
 		
@@ -82,45 +89,77 @@ public class Snake { // square eggs fill space much better
 		// constant accelerated move as soon as a key is pressed
 		switch (Keyboard.getLastKeyCode()) {
 			case LEFT:  {
+				turningU = false;
+				turningD = false;
+				turningR = false;
 				x = x - SIZE; 
-				if(!turning) {
+				if(!turningL) {
 					double head_x = head.getTranslateX();
 					double head_y = head.getTranslateY();
 					translatePosition(head);
 					rotatePosition(head, "L");
 					body.setTranslateX(head_x);
 					body.setTranslateY(head_y);
-					turning = !turning;
-					
-//					translatePosition(body);
-					
+					turningL = !turningL;				
 				}
 				else {
-					translatePosition(body);
+					translatePositionBody(body,SIZE,0 );
 					translatePosition(head);
 				}
 				allParts.add(body);
 				break;
 			}
 			case UP:    {
-				turning = false;
+				turningR = false;
+				turningD = false;
+				turningL = false;
 				y = y - SIZE; 
-				translatePosition(body);
-				translatePosition(head);
+				if(!turningU) {
+					double head_x = head.getTranslateX();
+					double head_y = head.getTranslateY();
+					translatePosition(head);
+					rotatePosition(head, "L");
+					body.setTranslateX(head_x);
+					body.setTranslateY(head_y);
+					turningR = !turningR;				
+				}
+				else {
+					translatePositionBody(body,-SIZE,0 );
+					translatePosition(head);
+				}
 				allParts.add(body);
 				break;
 			}
 			case RIGHT: {
-				x = x + SIZE; translatePosition(body); translatePosition(head);
+				turningU = false;
+				turningD = false;
+				turningL = false;
+				x = x + SIZE; 
+				if(!turningR) {
+					double head_x = head.getTranslateX();
+					double head_y = head.getTranslateY();
+					translatePosition(head);
+					rotatePosition(head, "R");
+					body.setTranslateX(head_x);
+					body.setTranslateY(head_y);
+					turningR = !turningR;				
+				}
+				else {
+					translatePositionBody(body,-SIZE,0 );
+					translatePosition(head);
+				}
 				allParts.add(body);
 				break;
 			}
 			case DOWN:	{
-				turning = false;
+				turningU = false;
+				turningR = false;
+				turningL = false;
 				y = y + SIZE; 
-				translatePosition(body);
+				translatePositionBody(body,0,-SIZE);
 				translatePosition(head);
 				allParts.add(body);
+				direction = "down";
 				break;
 			}
 			default: // keep horizontal&vertical speed when any other key is pressed
@@ -144,6 +183,12 @@ public class Snake { // square eggs fill space much better
 		// these are the methods that actually position the Node on screen
 		nod.setTranslateX(x);
 		nod.setTranslateY(y);
+	}
+	private void translatePositionBody(Node nod, double plusX, double plusY)
+	{
+		// these are the methods that actually position the Node on screen
+		nod.setTranslateX(x+plusX);
+		nod.setTranslateY(y+plusY);
 	}
 	
 	private void rotatePosition(Node nod, String direction) throws Exception
