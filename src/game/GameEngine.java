@@ -6,11 +6,20 @@ import java.util.TimerTask;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public abstract class GameEngine extends Application implements Runnable {
@@ -119,7 +128,39 @@ public abstract class GameEngine extends Application implements Runnable {
 			root.getChildren().setAll(gameStep());
 			timer.schedule(new GameTimerTask(this), DELAY_MS);
 		} catch (Exception e) {
-			e.printStackTrace();
+			  //Creating a Text object 
+			  Rectangle backgroundFill = new Rectangle(WINDOW_SIZE, WINDOW_SIZE, Color.ALICEBLUE);
+			  
+			  Text text = new Text(); 
+			  text.setText("Your snake has crashed!");
+			  //Setting font to the text 
+			  text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20)); 
+			  text.setFill(Color.RED);
+			  //setting the position of the text
+			  text.setX(WINDOW_SIZE/4); 
+			  text.setY(WINDOW_SIZE/2); 
+			  
+			  Button buttonExit = new Button("Exit");
+//				buttonExit.setLayoutX(WINDOW_SIZE/2);
+//				buttonExit.setLayoutY(WINDOW_SIZE/1.3);
+			  Button buttonStartAgain = new Button("Start Again");
+//				buttonStartAgain.setLayoutX(WINDOW_SIZE/2);
+//				buttonStartAgain.setLayoutY(WINDOW_SIZE/1.2);
+			  
+			  VBox vbox = new VBox();
+
+		      vbox.setSpacing(10);
+		      vbox.setPadding(new Insets(5));
+		      vbox.setAlignment(Pos.CENTER_LEFT);
+
+		      vbox.getChildren().addAll(buttonExit,buttonStartAgain);
+		      
+			  
+			  root.getChildren().add(backgroundFill);
+			  root.getChildren().add(text);
+			  root.getChildren().add(vbox);
+//			  root.getChildren().add(buttonExit);
+//			  root.getChildren().add(buttonStartAgain);
 		}		
 	}
 	
