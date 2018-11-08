@@ -13,7 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public abstract class Game extends Application implements Runnable {
+public abstract class GameEngine extends Application implements Runnable {
 
 	// ***************************************************************************** //
 	// *                                                                           * //
@@ -27,10 +27,10 @@ public abstract class Game extends Application implements Runnable {
 	static public String TITLE = "Game";
 
 	/** Background Color */
-	static public final Color BG_COLOR = Color.BLUE;
+	static public final Color BG_COLOR = Color.WHITE;
 
 	/** The size of all the elements building up the grid */
-	static public final double ELEMENT_SIZE = 12;
+	static public final double ELEMENT_SIZE = 24;
 	
 	/** The number of lines/columns in the grid */
 	static public final int GRID_SIZE = 24;
