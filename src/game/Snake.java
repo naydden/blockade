@@ -9,6 +9,7 @@ import javafx.scene.shape.*;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 
 public class Snake { // square eggs fill space much better
 	private static final double SIZE = GameEngine.ELEMENT_SIZE; 
@@ -17,10 +18,7 @@ public class Snake { // square eggs fill space much better
 	private double x, y;
 	private Color color;
 	Path head;
-	boolean turningL = false;
-	boolean turningR = false;
-	boolean turningD = false;
-	boolean turningU = false;
+
 	public Snake(double x, double y, Color color)
 	{
 		this.color = color;
@@ -36,12 +34,12 @@ public class Snake { // square eggs fill space much better
 	            (SIZE)/2, 3*SIZE 
 	    });
 		tail.setFill(Color.BLACK);
-		translatePosition(tail);
+		translatePosition(tail,0,0);
 		allParts.add(tail);
 
 //		First element of snake body
 		Rectangle fBody = addBody();
-		translatePositionBody(fBody, 0, SIZE);
+		translatePosition(fBody, 0, SIZE);
 		allParts.add(fBody);
 		
 //		Head of the snake
@@ -76,7 +74,7 @@ public class Snake { // square eggs fill space much better
 		head.setStrokeWidth(3.0);
 		head.setStrokeLineCap(StrokeLineCap.ROUND);
 		
-		translatePosition(head);
+		translatePosition(head,0,0);
 		allParts.add(head);	
 		
 	}
@@ -85,85 +83,73 @@ public class Snake { // square eggs fill space much better
 
 	public void move() throws Exception
 	{
-		Rectangle body = addBody();
-		// constant accelerated move as soon as a key is pressed
 		switch (Keyboard.getLastKeyCode()) {
 			case LEFT:  {
-				turningU = false;
-				turningD = false;
-				turningR = false;
+				if(head.getRotate() == 90) {
+					Keyboard.storeLastKeyCode(KeyCode.RIGHT);
+					x = x + SIZE; 
+					keyBoardMove(0, 180, -SIZE, 0, 0);
+					break;
+				}
 				x = x - SIZE; 
-				if(!turningL) {
-					double head_x = head.getTranslateX();
-					double head_y = head.getTranslateY();
-					translatePosition(head);
-					rotatePosition(head, "L");
-					body.setTranslateX(head_x);
-					body.setTranslateY(head_y);
-					turningL = !turningL;				
-				}
-				else {
-					translatePositionBody(body,SIZE,0 );
-					translatePosition(head);
-				}
-				allParts.add(body);
+				keyBoardMove(0, 180, SIZE, 0, -90);
 				break;
 			}
 			case UP:    {
-				turningR = false;
-				turningD = false;
-				turningL = false;
-				y = y - SIZE; 
-				if(!turningU) {
-					double head_x = head.getTranslateX();
-					double head_y = head.getTranslateY();
-					translatePosition(head);
-					rotatePosition(head, "L");
-					body.setTranslateX(head_x);
-					body.setTranslateY(head_y);
-					turningR = !turningR;				
+				if(head.getRotate() == 180) {
+					Keyboard.storeLastKeyCode(KeyCode.DOWN);
+					y = y + SIZE;
+					keyBoardMove(-90, 90, 0, -SIZE, 0);
+					break;
 				}
-				else {
-					translatePositionBody(body,-SIZE,0 );
-					translatePosition(head);
-				}
-				allParts.add(body);
+				y = y - SIZE;
+				keyBoardMove(-90, 90, 0, SIZE, 0);
 				break;
 			}
-			case RIGHT: {
-				turningU = false;
-				turningD = false;
-				turningL = false;
+			case RIGHT: {		
+				if(head.getRotate() == -90) {
+					Keyboard.storeLastKeyCode(KeyCode.LEFT);
+					x = x - SIZE; 
+					keyBoardMove(0, 180, SIZE, 0, 0);
+					break;
+				}
 				x = x + SIZE; 
-				if(!turningR) {
-					double head_x = head.getTranslateX();
-					double head_y = head.getTranslateY();
-					translatePosition(head);
-					rotatePosition(head, "R");
-					body.setTranslateX(head_x);
-					body.setTranslateY(head_y);
-					turningR = !turningR;				
-				}
-				else {
-					translatePositionBody(body,-SIZE,0 );
-					translatePosition(head);
-				}
-				allParts.add(body);
+				keyBoardMove(0, 180, -SIZE, 0, 90);
 				break;
 			}
 			case DOWN:	{
-				turningU = false;
-				turningR = false;
-				turningL = false;
-				y = y + SIZE; 
-				translatePositionBody(body,0,-SIZE);
-				translatePosition(head);
-				allParts.add(body);
-				direction = "down";
+				if(head.getRotate() == 0) {
+					Keyboard.storeLastKeyCode(KeyCode.UP);
+					y = y - SIZE;
+					keyBoardMove(-90, 90, 0, SIZE, 0);
+					break;
+				}
+				y = y + SIZE;
+				keyBoardMove(-90, 90, 0, -SIZE, 180);
 				break;
 			}
 			default: // keep horizontal&vertical speed when any other key is pressed
 		}
+	}
+	private void keyBoardMove(double Rot1, double Rot2, double bodyX, double bodyY, double setRot ) {
+		Rectangle body = addBody();
+		
+		double head_x = head.getTranslateX();
+		double head_y = head.getTranslateY();
+		double headRotation = head.getRotate();
+		
+		if(headRotation == Rot1 || headRotation == Rot2) {
+			translatePosition(head,0,0);
+			head.setRotate(setRot);
+			body.setTranslateX(head_x);
+			body.setTranslateY(head_y);
+		}
+		else {
+			translatePosition(body,bodyX,bodyY);
+			translatePosition(head,0,0);
+		}
+		allParts.add(body);
+		
 	}
 	
 	private Rectangle addBody() {
@@ -173,34 +159,23 @@ public class Snake { // square eggs fill space much better
 		body.setStroke(Color.BLACK);
 		body.setStrokeWidth(3.0);
 		body.setStrokeLineCap(StrokeLineCap.ROUND);
-		
 		return body;
 	}
 	
-
-	private void translatePosition(Node nod)
+	private void translatePosition(Node nod, double plusX, double plusY)
 	{
-		// these are the methods that actually position the Node on screen
-		nod.setTranslateX(x);
-		nod.setTranslateY(y);
-	}
-	private void translatePositionBody(Node nod, double plusX, double plusY)
-	{
-		// these are the methods that actually position the Node on screen
 		nod.setTranslateX(x+plusX);
 		nod.setTranslateY(y+plusY);
 	}
-	
-	private void rotatePosition(Node nod, String direction) throws Exception
-	{
-		if(direction == "R") {
-			nod.setRotate(90);
+//	methods that checks if snake head collides with another snake or with the walls.
+	private boolean isCollision() {
+		boolean collision = false;;
+		for(Node node : allParts) {
+			collision = (node.getTranslateX() == x && node.getTranslateY() == y) ? true : false;
+			if(collision)
+				break;
 		}
-		else if (direction == "L") {
-			nod.setRotate(-90);
-		}
-		else {
-			throw new Exception();
-		}
+		return collision;
 	}
+	
 }
