@@ -17,6 +17,7 @@ public class Snake { // square eggs fill space much better
 	private ArrayList<Node> allParts;
 	private double x, y;
 	private Color color;
+	private KeyCode lastValidKeyCode = KeyCode.P;
 	Path head;
 
 	public Snake(double x, double y, Color color)
@@ -85,7 +86,9 @@ public class Snake { // square eggs fill space much better
 	{
 		switch (Keyboard.getLastKeyCode()) {
 			case LEFT:  {
+				this.lastValidKeyCode = KeyCode.LEFT;
 				if(head.getRotate() == 90) {
+					this.lastValidKeyCode = KeyCode.RIGHT;
 					Keyboard.storeLastKeyCode(KeyCode.RIGHT);
 					x = x + SIZE; 
 					keyBoardMove(0, 180, -SIZE, 0, 0);
@@ -96,7 +99,9 @@ public class Snake { // square eggs fill space much better
 				break;
 			}
 			case UP:    {
+				this.lastValidKeyCode = KeyCode.UP;
 				if(head.getRotate() == 180) {
+					this.lastValidKeyCode = KeyCode.DOWN;
 					Keyboard.storeLastKeyCode(KeyCode.DOWN);
 					y = y + SIZE;
 					keyBoardMove(-90, 90, 0, -SIZE, 0);
@@ -106,8 +111,10 @@ public class Snake { // square eggs fill space much better
 				keyBoardMove(-90, 90, 0, SIZE, 0);
 				break;
 			}
-			case RIGHT: {		
+			case RIGHT: {
+				this.lastValidKeyCode = KeyCode.RIGHT;
 				if(head.getRotate() == -90) {
+					this.lastValidKeyCode = KeyCode.LEFT;
 					Keyboard.storeLastKeyCode(KeyCode.LEFT);
 					x = x - SIZE; 
 					keyBoardMove(0, 180, SIZE, 0, 0);
@@ -118,7 +125,9 @@ public class Snake { // square eggs fill space much better
 				break;
 			}
 			case DOWN:	{
+				this.lastValidKeyCode = KeyCode.DOWN;
 				if(head.getRotate() == 0) {
+					this.lastValidKeyCode = KeyCode.UP;
 					Keyboard.storeLastKeyCode(KeyCode.UP);
 					y = y - SIZE;
 					keyBoardMove(-90, 90, 0, SIZE, 0);
@@ -128,10 +137,20 @@ public class Snake { // square eggs fill space much better
 				keyBoardMove(-90, 90, 0, -SIZE, 180);
 				break;
 			}
-			default: // keep horizontal&vertical speed when any other key is pressed
+			case P:
+				this.lastValidKeyCode = KeyCode.P;
+				// stop the game
+				break;
+			default: {
+				// keep horizontal&vertical speed when any other key is pressed
+				Keyboard.storeLastKeyCode(this.lastValidKeyCode);
+				break;
+			}
 		}
 	}
-	private void keyBoardMove(double Rot1, double Rot2, double bodyX, double bodyY, double setRot ) {
+	private void keyBoardMove(double Rot1, double Rot2, double bodyX, double bodyY, double setRot ) throws Exception {
+		if(isCollision())
+			throw new Exception("crash");
 		Rectangle body = addBody();
 		
 		double head_x = head.getTranslateX();
@@ -169,9 +188,15 @@ public class Snake { // square eggs fill space much better
 	}
 //	methods that checks if snake head collides with another snake or with the walls.
 	private boolean isCollision() {
-		boolean collision = false;;
+		boolean collision = false;
+		double boardSizePX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
+		collision = (x >= boardSizePX || x < 0 || y >= boardSizePX || y < 0) 
+				? true : false;
+		if(collision)
+			return collision;
 		for(Node node : allParts) {
-			collision = (node.getTranslateX() == x && node.getTranslateY() == y) ? true : false;
+			collision = (node.getTranslateX() == x && node.getTranslateY() == y) 
+					? true : false;
 			if(collision)
 				break;
 		}

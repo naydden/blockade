@@ -19,14 +19,9 @@ public class GameMain extends GameEngine {
 	/** Application main method	 */
 	public static void main(String[] args) { Application.launch(args); }
 	
-	public ArrayList<Node> gameStep()
+	public ArrayList<Node> gameStep() throws Exception
 	{
-		try {
-			snake.move();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		snake.move();
 		ArrayList<Node> allAddedNodes = snake.getAllParts();
 		for (Node x : allAddedNodes){
 			   if (!allNodes.contains(x))

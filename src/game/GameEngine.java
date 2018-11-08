@@ -115,8 +115,12 @@ public abstract class GameEngine extends Application implements Runnable {
 	// It could be much more optimized wrt to the graph scene updating,
 	// but this should be enough for simple games.
 	final public void run() {
-		root.getChildren().setAll(gameStep());
-		timer.schedule(new GameTimerTask(this), DELAY_MS);		
+		try {
+			root.getChildren().setAll(gameStep());
+			timer.schedule(new GameTimerTask(this), DELAY_MS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	/**
@@ -125,6 +129,7 @@ public abstract class GameEngine extends Application implements Runnable {
 	 * @return a Collection of Node that will form the new JavaFX graph scene.
 	 * All theses nodes will be displayed on screen, except if their coordinates are
 	 * outside the window bounds...
+	 * @throws Exception 
 	 */
-	public abstract Collection<Node> gameStep();
+	public abstract Collection<Node> gameStep() throws Exception;
 }
