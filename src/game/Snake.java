@@ -7,7 +7,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 
@@ -15,17 +18,19 @@ public class Snake { // square eggs fill space much better
 	private static final double SIZE = GameEngine.ELEMENT_SIZE; 
 	private static final double STEP = 12;
 	private ArrayList<Node> allParts;
+	private Set<Position> allPositions;
 	private double x, y;
 	private Color color;
 	private KeyCode lastValidKeyCode = KeyCode.P;
-	Path head;
+	Group head;
 
-	public Snake(double x, double y, Color color)
+	public Snake(Position pos, Color color)
 	{
 		this.color = color;
-		this.x = x;
-		this.y = y;
+		this.x = pos.getX();
+		this.y = pos.getY();
 		this.allParts = new ArrayList<Node>();
+		this.allPositions = new HashSet<Position>();
 		
 //		Tail of the snake. Only one and with fixed position
 		Polygon tail = new Polygon();
@@ -36,20 +41,38 @@ public class Snake { // square eggs fill space much better
 	    });
 		tail.setFill(Color.BLACK);
 		translatePosition(tail,0,0);
+		this.allPositions.add(new Position(x,y+2*SIZE));
 		allParts.add(tail);
 
 //		First element of snake body
 		Rectangle fBody = addBody();
 		translatePosition(fBody, 0, SIZE);
+		this.allPositions.add(new Position(x,y+SIZE));
 		allParts.add(fBody);
 		
 //		Head of the snake
-		head = new Path();
-
+		head = new Group();
+		
 		MoveTo moveTo = new MoveTo();
 		moveTo.setX(0);
 		moveTo.setY(SIZE);
-
+		
+		Path headWrapper = new Path();
+		HLineTo hLineTo1 = new HLineTo();
+		hLineTo1.setX(SIZE);
+		VLineTo vLineTo1 = new VLineTo();
+		vLineTo1.setY(SIZE);
+		HLineTo hLineTo2 = new HLineTo();
+		hLineTo1.setX(0);
+		VLineTo vLineTo2 = new VLineTo();
+		vLineTo1.setY(0);
+		headWrapper.getElements().add(moveTo);
+		headWrapper.getElements().add(hLineTo1);
+		headWrapper.getElements().add(vLineTo1);
+		headWrapper.getElements().add(hLineTo2);
+		headWrapper.getElements().add(vLineTo2);	
+		
+		Path headShape = new Path();
 		HLineTo hLineTo = new HLineTo();
 		hLineTo.setX(SIZE);
 		
@@ -65,15 +88,18 @@ public class Snake { // square eggs fill space much better
 		quadTo2.setX(0);
 		quadTo2.setY(SIZE);
 		
-		head.getElements().add(moveTo);
-		head.getElements().add(hLineTo);
-		head.getElements().add(quadTo);
-		head.getElements().add(quadTo2);
+		headShape.getElements().add(moveTo);
+		headShape.getElements().add(hLineTo);
+		headShape.getElements().add(quadTo);
+		headShape.getElements().add(quadTo2);
 		
-		head.setFill(Color.RED);
-		head.setStroke(Color.BLACK);
-		head.setStrokeWidth(3.0);
-		head.setStrokeLineCap(StrokeLineCap.ROUND);
+		headShape.setFill(Color.RED);
+		headShape.setStroke(Color.BLACK);
+		headShape.setStrokeWidth(3.0);
+		headShape.setStrokeLineCap(StrokeLineCap.ROUND);
+		
+//		head.getChildren().add(headWrapper);
+		head.getChildren().add(headShape);
 		
 		translatePosition(head,0,0);
 		allParts.add(head);	
@@ -81,9 +107,11 @@ public class Snake { // square eggs fill space much better
 	}
 	
 	public ArrayList<Node> getAllParts() { return allParts; }
-
-	public void move() throws Exception
+	public Set<Position> getAllPositions() { return allPositions; }
+	
+	public void move(Set<Position> allPositions) throws Exception
 	{
+		this.allPositions = allPositions;
 		switch (Keyboard.getLastKeyCode()) {
 			case LEFT:  {
 				this.lastValidKeyCode = KeyCode.LEFT;
@@ -92,10 +120,12 @@ public class Snake { // square eggs fill space much better
 					Keyboard.storeLastKeyCode(KeyCode.RIGHT);
 					x = x + SIZE; 
 					keyBoardMove(0, 180, -SIZE, 0, 0);
+					this.allPositions.add(new Position(x,y));
 					break;
 				}
 				x = x - SIZE; 
 				keyBoardMove(0, 180, SIZE, 0, -90);
+				this.allPositions.add(new Position(x,y));
 				break;
 			}
 			case UP:    {
@@ -105,10 +135,12 @@ public class Snake { // square eggs fill space much better
 					Keyboard.storeLastKeyCode(KeyCode.DOWN);
 					y = y + SIZE;
 					keyBoardMove(-90, 90, 0, -SIZE, 0);
+					this.allPositions.add(new Position(x,y));
 					break;
 				}
 				y = y - SIZE;
 				keyBoardMove(-90, 90, 0, SIZE, 0);
+				this.allPositions.add(new Position(x,y));
 				break;
 			}
 			case RIGHT: {
@@ -118,10 +150,12 @@ public class Snake { // square eggs fill space much better
 					Keyboard.storeLastKeyCode(KeyCode.LEFT);
 					x = x - SIZE; 
 					keyBoardMove(0, 180, SIZE, 0, 0);
+					this.allPositions.add(new Position(x,y));
 					break;
 				}
 				x = x + SIZE; 
 				keyBoardMove(0, 180, -SIZE, 0, 90);
+				this.allPositions.add(new Position(x,y));
 				break;
 			}
 			case DOWN:	{
@@ -131,10 +165,12 @@ public class Snake { // square eggs fill space much better
 					Keyboard.storeLastKeyCode(KeyCode.UP);
 					y = y - SIZE;
 					keyBoardMove(-90, 90, 0, SIZE, 0);
+					this.allPositions.add(new Position(x,y));
 					break;
 				}
 				y = y + SIZE;
 				keyBoardMove(-90, 90, 0, -SIZE, 180);
+				this.allPositions.add(new Position(x,y));
 				break;
 			}
 			case P:
@@ -167,8 +203,7 @@ public class Snake { // square eggs fill space much better
 			translatePosition(body,bodyX,bodyY);
 			translatePosition(head,0,0);
 		}
-		allParts.add(body);
-		
+		allParts.add(body);	
 	}
 	
 	private Rectangle addBody() {
@@ -188,18 +223,30 @@ public class Snake { // square eggs fill space much better
 	}
 //	methods that checks if snake head collides with another snake or with the walls.
 	private boolean isCollision() {
+		/**
+		 * Checks collision with self and with wall. 
+		 */
 		boolean collision = false;
 		double boardSizePX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
+		Position currentPosition = new Position(x,y);
+
+//		check walls
 		collision = (x >= boardSizePX || x < 0 || y >= boardSizePX || y < 0) 
 				? true : false;
 		if(collision)
 			return collision;
-		for(Node node : allParts) {
-			collision = (node.getTranslateX() == x && node.getTranslateY() == y) 
-					? true : false;
-			if(collision)
-				break;
-		}
+////		check crash with itself
+//		for(Node node : allParts) {
+//			collision = (node.getTranslateX() == x && node.getTranslateY() == y) 
+//					? true : false;
+//			if(collision)
+//				break;
+//		}
+		
+//		check if snakes crashed with each other or with itself. 
+//		This is known when the position of the upper-left edge is the same.
+		if(allPositions.contains(currentPosition))
+			collision = true;
 		return collision;
 	}
 	

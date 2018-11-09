@@ -161,6 +161,7 @@ public abstract class GameEngine extends Application implements Runnable {
 			  root.getChildren().add(vbox);
 //			  root.getChildren().add(buttonExit);
 //			  root.getChildren().add(buttonStartAgain);
+			  System.out.println(e);
 		}		
 	}
 	
