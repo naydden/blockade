@@ -1,0 +1,18 @@
+package game;
+
+public class MovementConfig {
+	double Rot1;
+	double Rot2;
+	double bodyX; 
+	double bodyY;
+	double setRot;
+	
+	public MovementConfig(double Rot1, double Rot2, double bodyX, double bodyY, double setRot ) {
+		this.Rot1 = Rot1;
+		this.Rot2 = Rot2;
+		this.bodyX = bodyX;
+		this.bodyY = bodyY;
+		this.setRot = setRot;
+	}
+	
+}

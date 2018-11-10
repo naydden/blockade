@@ -21,8 +21,8 @@ public class Snake { // square eggs fill space much better
 	private ArrayList<Node> allPartsOfAllSnakes;
 	private double x, y;
 	private Color color;
-	private KeyCode lastValidKeyCode = KeyCode.P;
 	private String keyBoardChoice;
+	private Movement mov;
 	Group head;
 
 	public Snake(Position pos, Color color, String keyBoardChoice )
@@ -33,7 +33,6 @@ public class Snake { // square eggs fill space much better
 		this.allPartsOfSnake = new ArrayList<Node>();
 		this.allPartsOfAllSnakes = new ArrayList<Node>();
 		this.keyBoardChoice = keyBoardChoice;
-
 		
 //		Tail of the snake. Only one and with fixed position
 		Polygon tail = new Polygon();
@@ -87,6 +86,7 @@ public class Snake { // square eggs fill space much better
 		
 		translatePosition(head,0,0);
 		allPartsOfSnake.add(head);	
+		this.mov = new ControledMovement(keyBoardChoice);
 		
 	}
 	
@@ -95,147 +95,15 @@ public class Snake { // square eggs fill space much better
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
 		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		switch (keyBoardChoice) {
-			case "L":
-				leftKeyBoardControl(); break;
-			case "R":
-				rightKeyBoardControl(); break;
-		}
 		
+		Position currentPosition = new Position(x,y);
+		Position nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
+		this.x = nextPosition.getX();
+		this.y = nextPosition.getY();
+		nodeMove(this.mov.getMoveConfig());
 	}
-	private void rightKeyBoardControl() throws Exception {
 
-		switch (Keyboard.getLastKeyCodeR()) {
-		case LEFT:  {
-			this.lastValidKeyCode = KeyCode.LEFT;
-			if(head.getRotate() == 90) {
-				this.lastValidKeyCode = KeyCode.RIGHT;
-				Keyboard.storeLastKeyCode(KeyCode.RIGHT);
-				x = x + SIZE; 
-				keyBoardMove(0, 180, -SIZE, 0, 0);
-				break;
-			}
-			x = x - SIZE; 
-			keyBoardMove(0, 180, SIZE, 0, -90);
-			break;
-		}
-		case UP:    {
-			this.lastValidKeyCode = KeyCode.UP;
-			if(head.getRotate() == 180) {
-				this.lastValidKeyCode = KeyCode.DOWN;
-				Keyboard.storeLastKeyCode(KeyCode.DOWN);
-				y = y + SIZE;
-				keyBoardMove(-90, 90, 0, -SIZE, 0);
-				break;
-			}
-			y = y - SIZE;
-			keyBoardMove(-90, 90, 0, SIZE, 0);
-			break;
-		}
-		case RIGHT: {
-			this.lastValidKeyCode = KeyCode.RIGHT;
-			if(head.getRotate() == -90) {
-				this.lastValidKeyCode = KeyCode.LEFT;
-				Keyboard.storeLastKeyCode(KeyCode.LEFT);
-				x = x - SIZE; 
-				keyBoardMove(0, 180, SIZE, 0, 0);
-				break;
-			}
-			x = x + SIZE; 
-			keyBoardMove(0, 180, -SIZE, 0, 90);
-			break;
-		}
-		case DOWN:	{
-			this.lastValidKeyCode = KeyCode.DOWN;
-			if(head.getRotate() == 0) {
-				this.lastValidKeyCode = KeyCode.UP;
-				Keyboard.storeLastKeyCode(KeyCode.UP);
-				y = y - SIZE;
-				keyBoardMove(-90, 90, 0, SIZE, 0);
-				break;
-			}
-			y = y + SIZE;
-			keyBoardMove(-90, 90, 0, -SIZE, 180);
-			break;
-		}
-		case P:
-			this.lastValidKeyCode = KeyCode.P;
-			// stop the game
-			break;
-		default: {
-			// keep horizontal&vertical speed when any other key is pressed
-			Keyboard.storeLastKeyCode(this.lastValidKeyCode);
-			break;
-		}
-	}
-	}
-	private void leftKeyBoardControl() throws Exception {
-
-		switch (Keyboard.getLastKeyCodeL()) {
-		case A:  {
-			this.lastValidKeyCode = KeyCode.LEFT;
-			if(head.getRotate() == 90) {
-				this.lastValidKeyCode = KeyCode.RIGHT;
-				Keyboard.storeLastKeyCode(KeyCode.RIGHT);
-				x = x + SIZE; 
-				keyBoardMove(0, 180, -SIZE, 0, 0);
-				break;
-			}
-			x = x - SIZE; 
-			keyBoardMove(0, 180, SIZE, 0, -90);
-			break;
-		}
-		case W:    {
-			this.lastValidKeyCode = KeyCode.UP;
-			if(head.getRotate() == 180) {
-				this.lastValidKeyCode = KeyCode.DOWN;
-				Keyboard.storeLastKeyCode(KeyCode.DOWN);
-				y = y + SIZE;
-				keyBoardMove(-90, 90, 0, -SIZE, 0);
-				break;
-			}
-			y = y - SIZE;
-			keyBoardMove(-90, 90, 0, SIZE, 0);
-			break;
-		}
-		case D: {
-			this.lastValidKeyCode = KeyCode.RIGHT;
-			if(head.getRotate() == -90) {
-				this.lastValidKeyCode = KeyCode.LEFT;
-				Keyboard.storeLastKeyCode(KeyCode.LEFT);
-				x = x - SIZE; 
-				keyBoardMove(0, 180, SIZE, 0, 0);
-				break;
-			}
-			x = x + SIZE; 
-			keyBoardMove(0, 180, -SIZE, 0, 90);
-			break;
-		}
-		case S:	{
-			this.lastValidKeyCode = KeyCode.DOWN;
-			if(head.getRotate() == 0) {
-				this.lastValidKeyCode = KeyCode.UP;
-				Keyboard.storeLastKeyCode(KeyCode.UP);
-				y = y - SIZE;
-				keyBoardMove(-90, 90, 0, SIZE, 0);
-				break;
-			}
-			y = y + SIZE;
-			keyBoardMove(-90, 90, 0, -SIZE, 180);
-			break;
-		}
-		case P:
-			this.lastValidKeyCode = KeyCode.P;
-			// stop the game
-			break;
-		default: {
-			// keep horizontal&vertical speed when any other key is pressed
-			Keyboard.storeLastKeyCode(this.lastValidKeyCode);
-			break;
-		}
-	}
-	}
-	private void keyBoardMove(double Rot1, double Rot2, double bodyX, double bodyY, double setRot ) throws Exception {
+	private void nodeMove(MovementConfig mov) throws Exception {
 	
 		Rectangle body = addBody();
 		
@@ -243,14 +111,14 @@ public class Snake { // square eggs fill space much better
 		double head_y = head.getTranslateY();
 		double headRotation = head.getRotate();
 		
-		if(headRotation == Rot1 || headRotation == Rot2) {
+		if(headRotation == mov.Rot1 || headRotation == mov.Rot2) {
 			translatePosition(head,0,0);
-			head.setRotate(setRot);
+			head.setRotate(mov.setRot);
 			body.setTranslateX(head_x);
 			body.setTranslateY(head_y);
 		}
 		else {
-			translatePosition(body,bodyX,bodyY);
+			translatePosition(body,mov.bodyX,mov.bodyY);
 			translatePosition(head,0,0);
 		}
 		allPartsOfSnake.add(body);

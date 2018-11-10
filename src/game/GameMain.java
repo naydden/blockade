@@ -100,8 +100,8 @@ public class GameMain extends GameEngine {
 	public void initializeGame() {
 		Position startPos1 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
 		Position startPos2 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
-		snake1 = new Snake(startPos1, Color.AQUAMARINE, "R");
-		snake2 = new Snake(startPos2, Color.GREEN, "L");
+		snake1 = new Snake(startPos1, Color.AQUAMARINE, "L");
+		snake2 = new Snake(startPos2, Color.GREEN, "R");
 		
 		this.allNodes = new ArrayList<Node>();
 	}
