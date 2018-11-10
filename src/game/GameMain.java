@@ -19,10 +19,10 @@ public class GameMain extends GameEngine {
 	{
 		allPositions = new HashSet<Position>();
 		
-		Position startPos1 = new Position(new Random().nextInt((int)GRID_SIZE)*24, WINDOW_SIZE/2);
-		Position startPos2 = new Position(new Random().nextInt((int)GRID_SIZE)*24, WINDOW_SIZE/2);
-		snake1 = new Snake(startPos1, Color.AQUAMARINE);
-		snake2 = new Snake(startPos2, Color.GREEN);
+		Position startPos1 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
+		Position startPos2 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
+		snake1 = new Snake(startPos1, Color.AQUAMARINE, "R");
+		snake2 = new Snake(startPos2, Color.GREEN, "L");
 		
 		this.allNodes = new ArrayList<Node>();
 	}
@@ -32,17 +32,11 @@ public class GameMain extends GameEngine {
 	
 	public ArrayList<Node> gameStep() throws Exception
 	{
-		snake1.move(allPositions);
-		snake2.move(allPositions);
+		snake1.move(allNodes);
+		snake2.move(allNodes);
 		
-		Set<Position> updatedPositions = new HashSet<>();
 		ArrayList<Node> allAddedNodes1 = snake1.getAllParts();
-		updatedPositions.addAll(snake1.getAllPositions());
 		ArrayList<Node> allAddedNodes2 = snake2.getAllParts();
-		updatedPositions.addAll(snake2.getAllPositions());
-		
-		System.out.println(updatedPositions);
-		this.allPositions = updatedPositions;
 		
 		for (Node x : allAddedNodes1){
 			   if (!allNodes.contains(x))
