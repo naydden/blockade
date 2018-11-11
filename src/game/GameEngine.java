@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public abstract class GameEngine extends Application implements Runnable {
 
 	/** Speed of the game */
-	static public final long DELAY_MS = 350L;
+	static public final long DELAY_MS = 550L;
 
 	/** Graphical window title */
 	static public String TITLE = "Game";

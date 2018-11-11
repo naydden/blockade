@@ -25,14 +25,13 @@ public class Snake { // square eggs fill space much better
 	private Movement mov;
 	Group head;
 
-	public Snake(Position pos, Color color, String keyBoardChoice )
+	public Snake(Position pos, Color color, Movement mov )
 	{
 		this.color = color;
 		this.x = pos.getX();
 		this.y = pos.getY();
 		this.allPartsOfSnake = new ArrayList<Node>();
 		this.allPartsOfAllSnakes = new ArrayList<Node>();
-		this.keyBoardChoice = keyBoardChoice;
 		
 //		Tail of the snake. Only one and with fixed position
 		Polygon tail = new Polygon();
@@ -86,7 +85,7 @@ public class Snake { // square eggs fill space much better
 		
 		translatePosition(head,0,0);
 		allPartsOfSnake.add(head);	
-		this.mov = new ControledMovement(keyBoardChoice);
+		this.mov = mov;
 		
 	}
 	
@@ -95,7 +94,7 @@ public class Snake { // square eggs fill space much better
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
 		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		
+		mov.setData(allPartsOfAllSnakes, head);
 		Position currentPosition = new Position(x,y);
 		Position nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
 		this.x = nextPosition.getX();

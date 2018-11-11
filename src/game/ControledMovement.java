@@ -1,5 +1,9 @@
 package game;
 
+import java.util.ArrayList;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 
 public class ControledMovement implements Movement {
@@ -10,7 +14,9 @@ public class ControledMovement implements Movement {
 	private MovementConfig moveConfig;
 	private double headRotation; 
 	private Position lastPos;
-	
+	private ArrayList<Node> allPartsOfAllSnakes;
+	private Group headOfSnake;
+		
 	private KeyCode keyLEFT;
 	private KeyCode keyRIGHT;
 	private KeyCode keyUP;
@@ -44,6 +50,10 @@ public class ControledMovement implements Movement {
 	}
 	public MovementConfig getMoveConfig() {
 		return this.moveConfig;
+	}
+	public void setData(ArrayList<Node> allPartsOfAllSnakes, Group head) {
+		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
+		this.headOfSnake = head;
 	}
 	private Position KeyBoardControl(KeyCode L, KeyCode R, KeyCode U, KeyCode D) {
 		KeyCode last;

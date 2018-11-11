@@ -31,9 +31,11 @@ public class GameMain extends GameEngine {
 	private Snake snake2;
 	private ArrayList<Node> allNodes;
 	
+	private Movement movement1;
+	private Movement movement2;
+	
 	public GameMain() 
 	{
-		initializeGame();
 	}
 	
 	/** Application main method	 */
@@ -67,14 +69,16 @@ public class GameMain extends GameEngine {
 		Text welcomeText = new Text();
 		welcomeText.setText("B L O C K A D E");
 		// Setting font to the text
-		welcomeText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-		welcomeText.setFill(Color.RED);
+		welcomeText.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 50));
+		welcomeText.setFill(Color.BLUE);
 		
 		Button btnStart = new Button("Start Game");
-		
+		this.movement1 = new ControledMovement("L");
+		this.movement2 = new IntelligentMovement();
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+        		initializeGame();
                 gameScreen();
             }
         });
@@ -100,8 +104,8 @@ public class GameMain extends GameEngine {
 	public void initializeGame() {
 		Position startPos1 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
 		Position startPos2 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
-		snake1 = new Snake(startPos1, Color.AQUAMARINE, "L");
-		snake2 = new Snake(startPos2, Color.GREEN, "R");
+		snake1 = new Snake(startPos1, Color.AQUAMARINE, movement1);
+		snake2 = new Snake(startPos2, Color.GREEN, movement2);
 		
 		this.allNodes = new ArrayList<Node>();
 	}
