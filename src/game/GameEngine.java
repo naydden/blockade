@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public abstract class GameEngine extends Application implements Runnable {
 
 	/** Speed of the game */
-	static public final long DELAY_MS = 550L;
+	static public final long DELAY_MS = 150L;
 
 	/** Graphical window title */
 	static public String TITLE = "Game";
@@ -115,7 +115,8 @@ public abstract class GameEngine extends Application implements Runnable {
 			rootGame.getChildren().setAll(gameStep());
 			timer.schedule(new GameTimerTask(this), DELAY_MS);
 		} catch (Exception e) {
-			finalScreen(primaryStage,scene,root);
+			String snakeName = e.getMessage();
+			finalScreen(primaryStage,scene,root, snakeName);
 			System.out.println(e);
 		}
 	}
@@ -160,5 +161,5 @@ public abstract class GameEngine extends Application implements Runnable {
 	 */
 	public abstract Collection<Node> gameStep() throws Exception;
 	public abstract void welcomeScreen(Stage primaryStage, Scene scene, StackPane root);
-	public abstract void finalScreen(Stage primaryStage, Scene scene, StackPane root);
+	public abstract void finalScreen(Stage primaryStage, Scene scene, StackPane root, String snake);
 }

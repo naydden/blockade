@@ -74,7 +74,7 @@ public class GameMain extends GameEngine {
 		
 		Button btnStart = new Button("Start Game");
 		this.movement1 = new ControledMovement("L");
-		this.movement2 = new IntelligentMovement();
+		this.movement2 = new SuperIntelligentMovement();
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -104,12 +104,12 @@ public class GameMain extends GameEngine {
 	public void initializeGame() {
 		Position startPos1 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
 		Position startPos2 = new Position((new Random().nextInt((int)GRID_SIZE-2)+1)*24, WINDOW_SIZE/2);
-		snake1 = new Snake(startPos1, Color.AQUAMARINE, movement1);
-		snake2 = new Snake(startPos2, Color.GREEN, movement2);
+		snake1 = new Snake("Bobz",startPos1, Color.AQUAMARINE, movement1);
+		snake2 = new Snake("PC", startPos2, Color.GREEN, movement2);
 		
 		this.allNodes = new ArrayList<Node>();
 	}
-	public void finalScreen(Stage primaryStage, Scene scene, StackPane root) {
+	public void finalScreen(Stage primaryStage, Scene scene, StackPane root, String snake) {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(TITLE);
 		primaryStage.setResizable(false);
@@ -118,7 +118,7 @@ public class GameMain extends GameEngine {
 		Rectangle backgroundFill = new Rectangle(WINDOW_SIZE, WINDOW_SIZE, Color.ALICEBLUE);
 
 		Text text = new Text();
-		text.setText("Your snake has crashed!");
+		text.setText("Snake "+snake+" has crashed!");
 		// Setting font to the text
 		text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
 		text.setFill(Color.RED);

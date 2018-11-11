@@ -23,10 +23,12 @@ public class Snake { // square eggs fill space much better
 	private Color color;
 	private String keyBoardChoice;
 	private Movement mov;
+	private String snakeName;
 	Group head;
 
-	public Snake(Position pos, Color color, Movement mov )
+	public Snake(String snakeName, Position pos, Color color, Movement mov )
 	{
+		this.snakeName = snakeName;
 		this.color = color;
 		this.x = pos.getX();
 		this.y = pos.getY();
@@ -122,7 +124,7 @@ public class Snake { // square eggs fill space much better
 		}
 		allPartsOfSnake.add(body);
 		if(isCollision(head))
-			throw new Exception("crash");
+			throw new Exception(this.snakeName);
 	}
 	
 	private Rectangle addBody() {

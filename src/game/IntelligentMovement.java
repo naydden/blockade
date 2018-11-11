@@ -9,14 +9,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 
-/**
- * @author bobz
- *
- */
-/**
- * @author bobz
- *
- */
 public class IntelligentMovement implements Movement {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	
@@ -25,7 +17,6 @@ public class IntelligentMovement implements Movement {
 	private Position lastPos;
 	private ArrayList<Node> allPartsOfAllSnakes;
 	private Group headOfSnake;
-	private boolean flag = false;
 
 	public Position nextPosition (double headRotation, Position lastPosition) {
 		this.headRotation = headRotation;
@@ -36,103 +27,34 @@ public class IntelligentMovement implements Movement {
 		boolean occupiedE = false;
 		boolean occupiedW = false;
 		
+		double Ndx,Ndy,Edx,Edy,Wdx,Wdy;
+		
 		if(headRotation == 0) {
 			// North Direction
-			
-			// Check North
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()-SIZE);
-			occupiedN = checkCollision(scout);
-			// Check East
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()+SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedE = checkCollision(scout);
-			// Check West
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()-SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedW = checkCollision(scout);			
-				
+			Ndx = 0; Ndy = -SIZE; Edx = SIZE; Edy = 0; Wdx = -SIZE;	Wdy = 0;		
 		}
 		else if(headRotation == 180) {
 			// South Direction
-			
-			// Check North
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()+SIZE);
-			occupiedN = checkCollision(scout);
-			// Check East
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()-SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedE = checkCollision(scout);
-			// Check West
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()+SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedW = checkCollision(scout);
-
+			Ndx = 0; Ndy = SIZE; Edx = -SIZE; Edy = 0; Wdx = SIZE;	Wdy = 0;
 		}
 		else if(headRotation == 90) {
 			// East Direction
-			
-			// Check North
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()+SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedN = checkCollision(scout);
-			// Check East
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()+SIZE);
-			occupiedE = checkCollision(scout);
-			// Check West
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()-SIZE);
-			occupiedW = checkCollision(scout);
+			Ndx = SIZE; Ndy = 0; Edx = 0; Edy = SIZE; Wdx = 0; Wdy = -SIZE;
 		}
 		else if(headRotation == -90) {
 			// West Direction
-			
-			// Check North
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()-SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedN = checkCollision(scout);
-			// Check East
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()-SIZE);
-			occupiedE = checkCollision(scout);
-			// Check West
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()+SIZE);
-			occupiedW = checkCollision(scout);
+			Ndx = -SIZE; Ndy = 0; Edx = 0; Edy = -SIZE; Wdx = 0; Wdy = SIZE;
 		}
 		else {
 			// North Direction
-			
-			// Check North
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX());
-			scout.setTranslateY(headOfSnake.getTranslateY()-SIZE);
-			occupiedN = checkCollision(scout);
-			// Check East
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()+SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedE = checkCollision(scout);
-			// Check West
-			scout = addBody();
-			scout.setTranslateX(headOfSnake.getTranslateX()-SIZE);
-			scout.setTranslateY(headOfSnake.getTranslateY());
-			occupiedW = checkCollision(scout);
+			Ndx = 0; Ndy = -SIZE; Edx = SIZE; Edy = 0; Wdx = -SIZE;	Wdy = 0;
 		}
+		
+
+		occupiedN = checkDir(scout, Ndx, Ndy);
+		occupiedE = checkDir(scout, Edx, Edy);
+		occupiedW = checkDir(scout, Wdx, Wdy);
+	
 		Random myRand = new Random();
 		int randomInteger = myRand.nextInt(2);
 		if(occupiedN) {
@@ -192,6 +114,11 @@ public class IntelligentMovement implements Movement {
 			else
 				return goW(headRotation);
 		}
+	}
+	public boolean checkDir(Rectangle scout, double dx, double dy) {
+		scout.setTranslateX(headOfSnake.getTranslateX()+dx);
+		scout.setTranslateY(headOfSnake.getTranslateY()+dy);
+		return checkCollision(scout);
 	}
 	/**
 	 * Set of methods to go from Relative base to Absolute base
