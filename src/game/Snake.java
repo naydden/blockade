@@ -15,7 +15,8 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 
 public class Snake { // square eggs fill space much better
-	private static final double SIZE = GameEngine.ELEMENT_SIZE; 
+	private static final double SIZE = GameEngine.ELEMENT_SIZE;
+	private static final double BOARDSIZEPX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
 	private static final double STEP = 12;
 	private ArrayList<Node> allPartsOfSnake;
 	private ArrayList<Node> allPartsOfAllSnakes;
@@ -95,17 +96,17 @@ public class Snake { // square eggs fill space much better
 	
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
-		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		mov.setData(allPartsOfAllSnakes, head);
+//		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
+//		mov.setData(allPartsOfAllSnakes, head);
 		Position currentPosition = new Position(x,y);
-		Position nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
-		this.x = nextPosition.getX();
-		this.y = nextPosition.getY();
-		nodeMove(this.mov.getMoveConfig());
+		MovementConfig nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
+		nodeMove(nextPosition);
 	}
 
 	private void nodeMove(MovementConfig mov) throws Exception {
 	
+		this.x = mov.position.getX();
+		this.y = mov.position.getY();
 		Rectangle body = addBody();
 		
 		double head_x = head.getTranslateX();
@@ -123,6 +124,7 @@ public class Snake { // square eggs fill space much better
 			translatePosition(head,0,0);
 		}
 		allPartsOfSnake.add(body);
+		
 		if(isCollision(head))
 			throw new Exception(this.snakeName);
 	}
@@ -142,36 +144,25 @@ public class Snake { // square eggs fill space much better
 		nod.setTranslateX(x+plusX);
 		nod.setTranslateY(y+plusY);
 	}
-//	methods that checks if snake head collides with another snake or with the walls.
+
 	private boolean isCollision(Node block) {
 		/**
 		 * Checks collision with self and with wall. 
 		 */
-		boolean collision = false;
-		double boardSizePX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
-		Position currentPosition = new Position(x,y);
-
-//		check walls
-		collision = (x >= boardSizePX || x < 0 || y >= boardSizePX || y < 0) 
-				? true : false;
-		if(collision)
-			return collision;
-//		check if snakes crashed with each other or with itself.
-//		This is known when the position of the upper-left edge is the same.
-		if(checkBounds(block))
-			collision = true;
-		return collision;
+		boolean collisionWalls = (x >= BOARDSIZEPX || x < 0 || y >= BOARDSIZEPX || y < 0) 
+				? true : false;	
+		boolean collisionSnake = checkBounds(block);
+		System.out.println(collisionSnake);
+		return collisionWalls || collisionSnake;
 	}
-	private boolean checkBounds(Node block) {
-		  boolean collisionDetected = false;
+	
+	private boolean checkBounds(Node head) {
 		  for (Node node : allPartsOfAllSnakes) {
-		    if (node != block) {
-		      if (block.getBoundsInParent().intersects(node.getBoundsInParent())) {
-		        collisionDetected = true;
-		      }
-		    }
+		    if (node != head)
+		      if (head.getBoundsInParent().intersects(node.getBoundsInParent()))
+		    	  return true;
 		  }
-		  return collisionDetected;
+		  return false;
 	}
 	
 }

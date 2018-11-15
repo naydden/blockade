@@ -15,8 +15,8 @@ public class IntelligentMovement implements Movement {
 	private MovementConfig moveConfig;
 	private double headRotation; 
 	private Position lastPos;
-	private ArrayList<Node> allPartsOfAllSnakes;
-	private Group headOfSnake;
+	ArrayList<Node> allPartsOfAllSnakes;
+	Group headOfSnake;
 
 	public Position nextPosition (double headRotation, Position lastPosition) {
 		this.headRotation = headRotation;
@@ -159,10 +159,7 @@ public class IntelligentMovement implements Movement {
 	public MovementConfig getMoveConfig() {
 		return this.moveConfig;
 	}
-	public void setData(ArrayList<Node> allPartsOfAllSnakes, Group head) {
-		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		this.headOfSnake = head;
-	}
+
 	public boolean checkCollision(Node block) {
 		boolean collisionSnake = false;
 		boolean collisionWalls = false;

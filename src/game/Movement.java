@@ -6,7 +6,5 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 
 public interface Movement {
-	public Position nextPosition (double headRotation, Position lastPosition);
-	public MovementConfig getMoveConfig();
-	public void setData(ArrayList<Node> allPartsOfAllSnakes, Group head);
+	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception;
 }

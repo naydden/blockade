@@ -73,8 +73,8 @@ public class GameMain extends GameEngine {
 		welcomeText.setFill(Color.BLUE);
 		
 		Button btnStart = new Button("Start Game");
-		this.movement1 = new ControledMovement("L");
-		this.movement2 = new SuperIntelligentMovement();
+		this.movement1 = new RandomMovement();
+		this.movement2 = new RandomMovement();
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
