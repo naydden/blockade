@@ -171,4 +171,10 @@ public class Snake { // square eggs fill space much better
 		  return false;
 	}
 	
+	@Override
+	public String toString() {
+		return this.snakeName;
+	}
+	
+	
 }

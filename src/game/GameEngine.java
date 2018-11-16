@@ -160,6 +160,8 @@ public abstract class GameEngine extends Application implements Runnable {
 	 * @throws Exception
 	 */
 	public abstract Collection<Node> gameStep() throws Exception;
+	public abstract void welcomeScreenSingle(Stage primaryStage, Scene scene, StackPane root);
+	public abstract void welcomeScreenMulti(Stage primaryStage, Scene scene, StackPane root);
 	public abstract void welcomeScreen(Stage primaryStage, Scene scene, StackPane root);
 	public abstract void finalScreen(Stage primaryStage, Scene scene, StackPane root, String snake);
 }
