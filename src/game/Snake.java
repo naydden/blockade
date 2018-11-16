@@ -133,7 +133,7 @@ public class Snake { // square eggs fill space much better
 		allPartsOfSnake.add(body);
 		
 		if(isCollision(head))
-			throw new Exception(this.snakeName);
+			throw new Exception("Snake "+this.snakeName+" has crashed!");
 	}
 	
 	private Rectangle addBody() {

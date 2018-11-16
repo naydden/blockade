@@ -80,7 +80,7 @@ public abstract class GameEngine extends Application implements Runnable {
 			Platform.exit();
 			System.exit(0);
 		});
-		welcomeScreen(primaryStage,scene,root);
+		welcomeScreen(root);
 		// Show a graphical window with all the graph scene content
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(TITLE);
@@ -115,8 +115,12 @@ public abstract class GameEngine extends Application implements Runnable {
 			rootGame.getChildren().setAll(gameStep());
 			timer.schedule(new GameTimerTask(this), DELAY_MS);
 		} catch (Exception e) {
+			primaryStage.setScene(scene);
+			primaryStage.setTitle(TITLE);
+			primaryStage.setResizable(false);
+			primaryStage.show();
 			String snakeName = e.getMessage();
-			finalScreen(primaryStage,scene,root, snakeName);
+			finalScreen(root,snakeName);
 			System.out.println(e);
 		}
 	}
@@ -160,8 +164,6 @@ public abstract class GameEngine extends Application implements Runnable {
 	 * @throws Exception
 	 */
 	public abstract Collection<Node> gameStep() throws Exception;
-	public abstract void welcomeScreenSingle(Stage primaryStage, Scene scene, StackPane root);
-	public abstract void welcomeScreenMulti(Stage primaryStage, Scene scene, StackPane root);
-	public abstract void welcomeScreen(Stage primaryStage, Scene scene, StackPane root);
-	public abstract void finalScreen(Stage primaryStage, Scene scene, StackPane root, String snake);
+	public abstract void welcomeScreen(StackPane root);
+	public abstract void finalScreen(StackPane root,String snake);
 }
