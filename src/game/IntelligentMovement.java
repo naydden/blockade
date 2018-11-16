@@ -12,13 +12,12 @@ import javafx.scene.shape.StrokeLineCap;
 public class IntelligentMovement implements Movement {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	
-	private MovementConfig moveConfig;
 	private double headRotation; 
 	private Position lastPos;
 	ArrayList<Node> allPartsOfAllSnakes;
 	Group headOfSnake;
 
-	public Position nextPosition (double headRotation, Position lastPosition) {
+	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
 		this.headRotation = headRotation;
 		this.lastPos = lastPosition;
 		
@@ -60,59 +59,59 @@ public class IntelligentMovement implements Movement {
 		if(occupiedN) {
 			if(occupiedE)
 				if(occupiedW)
-					return goW(headRotation);
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 				else
-					return goW(headRotation);
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 			else
 				if(occupiedW)
-					return goE(headRotation);
+					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 				else {
 					if (randomInteger == 0) 
-						return goE(headRotation);
+						return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 					else
-						return goW(headRotation);
+						return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 				}		
 		}
 		else if(occupiedE) {
 			if(occupiedN)
 				if(occupiedW)
-					return goW(headRotation);
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 				else
-					return goW(headRotation);
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 			else
 				if(occupiedW)
-					return goN(headRotation);
+					return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 				else {
 					if (randomInteger == 0) 
-						return goW(headRotation);
+						return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 					else
-						return goN(headRotation);
+						return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 				}		
 		}
 		else if(occupiedW) {
 			if(occupiedN)
 				if(occupiedE)
-					return goE(headRotation);
+					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 				else
-					return goE(headRotation);
+					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 			else
 				if(occupiedE)
-					return goN(headRotation);
+					return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 				else {
 					if (randomInteger == 0) 
-						return goE(headRotation);
+						return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 					else
-						return goN(headRotation);
+						return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 				}		
 		}
 		else {
 			int randomInt = myRand.nextInt(3);
 			if (randomInt == 0) 
-				return goN(headRotation);
+				return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 			else if (randomInt == 1)
-				return goE(headRotation);
+				return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 			else
-				return goW(headRotation);
+				return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 		}
 	}
 	public boolean checkDir(Rectangle scout, double dx, double dy) {
@@ -124,42 +123,19 @@ public class IntelligentMovement implements Movement {
 	 * Set of methods to go from Relative base to Absolute base
 	 * @param headRotation
 	 * @return
+	 * @throws Exception 
 	 */
-	public Position goN(double headRotation) {
+	public MovementConfig goLocal(double headRotation, Direction dir1, Direction dir2, Direction dir3, Direction dir4) throws Exception {
 		if(headRotation == 0)
-			return goUP();
+			return go(dir1);
 		else if(headRotation == -90)
-			return goLEFT();
+			return go(dir2);
 		else if(headRotation == 90)
-			return goRIGHT();
+			return go(dir3);
 		else
-			return goDOWN();
+			return go(dir4);
 	}
-	public Position goE(double headRotation) {
-		if(headRotation == 0)
-			return goRIGHT();
-		else if(headRotation == -90)
-			return goUP();
-		else if(headRotation == 90)
-			return goDOWN();
-		else
-			return goLEFT();
-	}
-	public Position goW(double headRotation) {
-		if(headRotation == 0)
-			return goLEFT();
-		else if(headRotation == -90)
-			return goDOWN();
-		else if(headRotation == 90)
-			return goUP();
-		else
-			return goRIGHT();
-	}
-
-	public MovementConfig getMoveConfig() {
-		return this.moveConfig;
-	}
-
+	
 	public boolean checkCollision(Node block) {
 		boolean collisionSnake = false;
 		boolean collisionWalls = false;
@@ -179,6 +155,7 @@ public class IntelligentMovement implements Movement {
 		
 		return collisionSnake || collisionWalls;
 	}
+	
 	private Rectangle addBody() {
 		Rectangle body = new Rectangle(SIZE-5, SIZE-5, Color.AQUAMARINE);
 		body.setArcWidth(SIZE/2);
@@ -188,36 +165,43 @@ public class IntelligentMovement implements Movement {
 		body.setStrokeLineCap(StrokeLineCap.ROUND);
 		return body;
 	}
-	public Position goUP() {
-		if(this.headRotation == 180) {
-			this.moveConfig = new MovementConfig(-90, 90, 0, -SIZE, 0);
-			return new Position(lastPos.getX(),lastPos.getY()+SIZE);
+	
+	public MovementConfig go(Direction dir) throws Exception {
+		switch(dir) {
+			case UP:{
+				if(this.headRotation == 180)
+					return new MovementConfig(-90, 90, 0, -SIZE, 0, 
+							new Position(lastPos.getX(),lastPos.getY()+SIZE));
+				else
+					return new MovementConfig(-90, 90, 0, SIZE, 0,
+							new Position(lastPos.getX(),lastPos.getY()-SIZE));
+			}
+			case DOWN: {
+				if(this.headRotation == 0)
+					return new MovementConfig(-90, 90, 0, SIZE, 0, 
+							new Position(lastPos.getX(),lastPos.getY()-SIZE));
+				else
+					return new MovementConfig(-90, 90, 0, -SIZE, 180,
+							new Position(lastPos.getX(),lastPos.getY()+SIZE));
+			}
+			case LEFT: {
+				if(this.headRotation == 90)
+					return new MovementConfig(0, 180, -SIZE, 0, 0,
+							new Position(lastPos.getX()+SIZE,lastPos.getY()));
+				else
+					return new MovementConfig(0, 180, SIZE, 0, -90,
+							new Position(lastPos.getX()-SIZE,lastPos.getY()));
+			}
+			case RIGHT: {
+				if(this.headRotation == -90)
+					return new MovementConfig(0, 180, SIZE, 0, 90,
+							new Position(lastPos.getX()-SIZE,lastPos.getY()));
+				else
+					return new MovementConfig(0, 180, -SIZE, 0, 90,
+							new Position(lastPos.getX()+SIZE,lastPos.getY()));	
+			}
+			default:
+				throw new Exception("Specified direction is not valid!");
 		}
-		this.moveConfig = new MovementConfig(-90, 90, 0, SIZE, 0);
-		return new Position(lastPos.getX(),lastPos.getY()-SIZE);	
-	}
-	public Position goDOWN() {
-		if(this.headRotation == 0) {
-			this.moveConfig = new MovementConfig(-90, 90, 0, SIZE, 0);
-			return new Position(lastPos.getX(),lastPos.getY()-SIZE);
-		}
-		this.moveConfig = new MovementConfig(-90, 90, 0, -SIZE, 180);
-		return new Position(lastPos.getX(),lastPos.getY()+SIZE);
-	}
-	public Position goLEFT() {
-		if(this.headRotation == 90) {
-			this.moveConfig = new MovementConfig(0, 180, -SIZE, 0, 0);
-			return new Position(lastPos.getX()+SIZE,lastPos.getY());
-		}
-		this.moveConfig = new MovementConfig(0, 180, SIZE, 0, -90);
-		return new Position(lastPos.getX()-SIZE,lastPos.getY());
-	}
-	public Position goRIGHT() {
-		if(this.headRotation == -90) {
-			this.moveConfig = new MovementConfig(0, 180, SIZE, 0, 90);
-			return new Position(lastPos.getX()-SIZE,lastPos.getY());
-		}
-		this.moveConfig = new MovementConfig(0, 180, -SIZE, 0, 90);
-		return new Position(lastPos.getX()+SIZE,lastPos.getY());
 	}
 }

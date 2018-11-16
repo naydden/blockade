@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,7 +17,11 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -66,15 +72,86 @@ public class GameMain extends GameEngine {
 		primaryStage.setResizable(false);
 		primaryStage.show();
 		
+		// TEXT EFFECT
+		DropShadow ds = new DropShadow();
+		ds.setOffsetY(3.0f);
+		ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
 		Text welcomeText = new Text();
+		welcomeText.setEffect(ds);
+		welcomeText.setCache(true);
 		welcomeText.setText("B L O C K A D E");
 		// Setting font to the text
 		welcomeText.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 50));
 		welcomeText.setFill(Color.BLUE);
 		
+
+		// Snake Options
+		
+		// Start Button	
+		VBox modeBtnWrapper = new VBox();
+		modeBtnWrapper.setSpacing(10);
+		modeBtnWrapper.setPadding(new Insets(5));
+		modeBtnWrapper.setAlignment(Pos.CENTER);
+		
+		Button btnSingle = new Button("Single");
+		Button btnMultiplayer = new Button("Multiplayer (Reseau) ");
+		
+		modeBtnWrapper.getChildren().addAll(btnSingle,btnMultiplayer);
+		HBox snakeConfigWrapper = new HBox();
+		snakeConfigWrapper.setSpacing(10);
+		snakeConfigWrapper.setPadding(new Insets(5));
+		snakeConfigWrapper.setAlignment(Pos.CENTER);
+		
+		VBox snakeConfigWrapperVertical = new VBox();
+		snakeConfigWrapperVertical.setSpacing(10);
+		snakeConfigWrapperVertical.setPadding(new Insets(5));
+		snakeConfigWrapperVertical.setAlignment(Pos.CENTER);
+
+		TextField snakeName = new TextField();
+		snakeName.setPromptText("Snake 1 Name");
+		ObservableList<String> options = 
+			    FXCollections.observableArrayList(
+			        "Controlled ASDW",
+			        "Controled ↑,↓,←,→",
+			        "Random",
+			        "Intelligent",
+			        "SuperIntelligent"
+			    );
+		Text mode1 = new Text();
+		mode1.setText("Choose your mode:");
+		ComboBox comboBoxSnake1 = new ComboBox(options);
+		snakeConfigWrapperVertical.getChildren().addAll(snakeName,mode1,comboBoxSnake1);
+		
+		
+		
+		VBox snakeConfigWrapperVertical2 = new VBox();
+		snakeConfigWrapperVertical2.setSpacing(10);
+		snakeConfigWrapperVertical2.setPadding(new Insets(5));
+		snakeConfigWrapperVertical2.setAlignment(Pos.CENTER);
+
+		TextField snakeName2 = new TextField();
+		snakeName2.setPromptText("Snake 2 Name");
+		ObservableList<String> options2 = 
+			    FXCollections.observableArrayList(
+			        "Controlled ASDW",
+			        "Controled ↑,↓,←,→",
+			        "Random",
+			        "Intelligent",
+			        "SuperIntelligent"
+			    );
+		Text mode2 = new Text();
+		mode2.setText("Choose your mode:");
+		ComboBox comboBoxSnake2 = new ComboBox(options2);
+		snakeConfigWrapperVertical2.getChildren().addAll(snakeName2,mode2,comboBoxSnake2);
+		
+		
+		snakeConfigWrapper.getChildren().addAll(snakeConfigWrapperVertical,snakeConfigWrapperVertical2);
+		
+		//		snakeConfigWrapper.getChildren().addAll(welcomeText, btnStart, author);
+		// Start Button	
 		Button btnStart = new Button("Start Game");
-		this.movement1 = new RandomMovement();
-		this.movement2 = new RandomMovement();
+		this.movement1 = new ControledMovement("L");
+		this.movement2 = new SuperIntelligentMovement();
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -95,7 +172,7 @@ public class GameMain extends GameEngine {
 		vbox.setPadding(new Insets(5));
 		vbox.setAlignment(Pos.CENTER);
 
-		vbox.getChildren().addAll(welcomeText, btnStart, author);
+		vbox.getChildren().addAll(welcomeText,modeBtnWrapper,snakeConfigWrapper, btnStart, author);
 		     
 	     
 		root.getChildren().setAll(vbox);

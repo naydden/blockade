@@ -96,8 +96,15 @@ public class Snake { // square eggs fill space much better
 	
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
-//		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-//		mov.setData(allPartsOfAllSnakes, head);
+		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
+		if(mov instanceof IntelligentMovement) {
+			((IntelligentMovement) mov).allPartsOfAllSnakes = this.allPartsOfAllSnakes;
+			((IntelligentMovement) mov).headOfSnake = this.head;
+		}
+		else if(mov instanceof SuperIntelligentMovement) {
+			((SuperIntelligentMovement) mov).allPartsOfAllSnakes = this.allPartsOfAllSnakes;
+			((SuperIntelligentMovement) mov).headOfSnake = this.head;
+		}
 		Position currentPosition = new Position(x,y);
 		MovementConfig nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
 		nodeMove(nextPosition);
@@ -152,7 +159,6 @@ public class Snake { // square eggs fill space much better
 		boolean collisionWalls = (x >= BOARDSIZEPX || x < 0 || y >= BOARDSIZEPX || y < 0) 
 				? true : false;	
 		boolean collisionSnake = checkBounds(block);
-		System.out.println(collisionSnake);
 		return collisionWalls || collisionSnake;
 	}
 	

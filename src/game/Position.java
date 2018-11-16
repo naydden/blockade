@@ -12,12 +12,6 @@ public class Position {
 		x = x0;
 		y = y0;	
 	}
-	public void setX(Double x) {
-		this.x = x;
-	}
-	public void setY(Double y) {
-		this.y = y;
-	}
 	public double getX() {
 		return x;
 	}

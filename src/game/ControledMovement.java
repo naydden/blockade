@@ -14,8 +14,7 @@ public class ControledMovement implements Movement {
 	private MovementConfig moveConfig;
 	private double headRotation; 
 	private Position lastPos;
-	ArrayList<Node> allPartsOfAllSnakes;
-	Group headOfSnake;
+
 		
 	private KeyCode keyLEFT;
 	private KeyCode keyRIGHT;
@@ -43,15 +42,12 @@ public class ControledMovement implements Movement {
 		}
 		Keyboard.storeLastKeyCode(this.lastValidKeyCode);
 	}
-	public Position nextPosition (double headRotation, Position lastPosition) {
+	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
 		this.headRotation = headRotation;
 		this.lastPos = lastPosition;
 		return KeyBoardControl(this.keyLEFT, this.keyRIGHT, this.keyUP, this.keyDOWN);
 	}
-	public MovementConfig getMoveConfig() {
-		return this.moveConfig;
-	}
-	private Position KeyBoardControl(KeyCode L, KeyCode R, KeyCode U, KeyCode D) {
+	private MovementConfig KeyBoardControl(KeyCode L, KeyCode R, KeyCode U, KeyCode D) throws Exception {
 		KeyCode last;
 		if(L.equals(KeyCode.A))
 			last =  Keyboard.getLastKeyCodeL();
@@ -59,71 +55,75 @@ public class ControledMovement implements Movement {
 			last =  Keyboard.getLastKeyCodeR();
 	
 		if( last.equals(L))
-			return goLEFT(L,R);
+			return go(Direction.LEFT,L,R);
 		else if(last.equals(U))
-			return goUP(U,D);
+			return go(Direction.UP,U,D);
 		else if(last.equals(R))
-			return goRIGHT(R,L);
+			return go(Direction.RIGHT,R,L);
 		else if(last.equals(D))
-			return goDOWN(D,U);
+			return go(Direction.DOWN,D,U);
 		else {
 			if( this.lastValidKeyCode.equals(L))
-				return goLEFT(L,R);
+				return go(Direction.LEFT,L,R);
 			else if(last.equals(U))
-				return goUP(U,D);
+				return go(Direction.UP,U,D);
 			else if(last.equals(R))
-				return goRIGHT(R,L);
+				return go(Direction.RIGHT,R,L);
 			else if(last.equals(D))
-				return goDOWN(D,U);
+				return go(Direction.DOWN,D,U);
 			else {
-				return goUP(U,D);
+				return go(Direction.UP,U,D);
 			}
 		}
 	}
-	public Position goUP(KeyCode Up, KeyCode Down) {
-		this.lastValidKeyCode = Up;
-		if(this.headRotation == 180) {
-			this.lastValidKeyCode = Down;
-			Keyboard.storeLastKeyCode(Down);
-			this.moveConfig = new MovementConfig(-90, 90, 0, -SIZE, 0);
-			return new Position(lastPos.getX(),lastPos.getY()+SIZE);
+	public MovementConfig go(Direction dir, KeyCode dirKey1, KeyCode dirKey2) throws Exception {
+		switch(dir) {
+			case UP:{
+				this.lastValidKeyCode = dirKey1;
+				if(this.headRotation == 180) {
+					this.lastValidKeyCode = dirKey2;
+					Keyboard.storeLastKeyCode(dirKey2);
+					return new MovementConfig(-90, 90, 0, -SIZE, 0, 
+							new Position(lastPos.getX(),lastPos.getY()+SIZE));
+				}
+				return new MovementConfig(-90, 90, 0, SIZE, 0,
+						new Position(lastPos.getX(),lastPos.getY()-SIZE));
+			}
+			case DOWN: {
+				this.lastValidKeyCode = dirKey1;
+				if(this.headRotation == 0) {
+					this.lastValidKeyCode = dirKey2;
+					Keyboard.storeLastKeyCode(dirKey2);
+					return new MovementConfig(-90, 90, 0, SIZE, 0, 
+							new Position(lastPos.getX(),lastPos.getY()-SIZE));
+				}
+				return new MovementConfig(-90, 90, 0, -SIZE, 180,
+							new Position(lastPos.getX(),lastPos.getY()+SIZE));
+			}
+			case LEFT: {
+				this.lastValidKeyCode = dirKey1;
+				if(this.headRotation == 90) {
+					this.lastValidKeyCode = dirKey2;
+					Keyboard.storeLastKeyCode(dirKey2);
+					return new MovementConfig(0, 180, -SIZE, 0, 0,
+							new Position(lastPos.getX()+SIZE,lastPos.getY()));
+				}
+				return new MovementConfig(0, 180, SIZE, 0, -90,
+							new Position(lastPos.getX()-SIZE,lastPos.getY()));
+			}
+			case RIGHT: {
+				this.lastValidKeyCode = dirKey1;
+				if(this.headRotation == -90) {
+					this.lastValidKeyCode = dirKey2;
+					Keyboard.storeLastKeyCode(dirKey2);
+					return new MovementConfig(0, 180, SIZE, 0, 90,
+							new Position(lastPos.getX()-SIZE,lastPos.getY()));
+				}
+				return new MovementConfig(0, 180, -SIZE, 0, 90,
+							new Position(lastPos.getX()+SIZE,lastPos.getY()));	
+			}
+			default:
+				throw new Exception("Specified direction is not valid!");
 		}
-		this.moveConfig = new MovementConfig(-90, 90, 0, SIZE, 0);
-		return new Position(lastPos.getX(),lastPos.getY()-SIZE);	
-	}
-	public Position goDOWN(KeyCode Down, KeyCode Up) {
-		this.lastValidKeyCode = Down;
-		if(this.headRotation == 0) {
-			this.lastValidKeyCode = Up;
-			Keyboard.storeLastKeyCode(Up);
-			this.moveConfig = new MovementConfig(-90, 90, 0, SIZE, 0);
-			return new Position(lastPos.getX(),lastPos.getY()-SIZE);
-		}
-		this.moveConfig = new MovementConfig(-90, 90, 0, -SIZE, 180);
-		return new Position(lastPos.getX(),lastPos.getY()+SIZE);
-	}
-	public Position goLEFT(KeyCode Left, KeyCode Right) {
-		this.lastValidKeyCode = Left;
-		if(this.headRotation == 90) {
-			this.lastValidKeyCode = Right;
-			Keyboard.storeLastKeyCode(Right);
-			
-			this.moveConfig = new MovementConfig(0, 180, -SIZE, 0, 0);
-			return new Position(lastPos.getX()+SIZE,lastPos.getY());
-		}
-		this.moveConfig = new MovementConfig(0, 180, SIZE, 0, -90);
-		return new Position(lastPos.getX()-SIZE,lastPos.getY());
-	}
-	public Position goRIGHT(KeyCode Right, KeyCode Left) {
-		this.lastValidKeyCode = Right;
-		if(this.headRotation == -90) {
-			this.lastValidKeyCode = Left;
-			Keyboard.storeLastKeyCode(Left);
-			this.moveConfig = new MovementConfig(0, 180, SIZE, 0, 90);
-			return new Position(lastPos.getX()-SIZE,lastPos.getY());
-
-		}
-		this.moveConfig = new MovementConfig(0, 180, -SIZE, 0, 90);
-		return new Position(lastPos.getX()+SIZE,lastPos.getY());
 	}
 }
