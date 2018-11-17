@@ -2,15 +2,13 @@ package game;
 
 
 import javafx.scene.paint.Color;
-//import javafx.scene.shape.Rectangle;
-//import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.*;
 
 import java.util.ArrayList;
 import javafx.scene.Group;
 import javafx.scene.Node;
 
-public class Snake { // square eggs fill space much better
+public class Snake {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	private static final double BOARDSIZEPX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
 	private ArrayList<Node> allPartsOfSnake;
