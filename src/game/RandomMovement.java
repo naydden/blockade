@@ -1,11 +1,8 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 
 public class RandomMovement implements Movement {
 	
@@ -19,8 +16,8 @@ public class RandomMovement implements Movement {
 		this.randomChoice = new Random();  
 	}
 
-	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
-		this.headRotation = headRotation;
+	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
+		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		int randomInteger = this.randomChoice.nextInt(4);
 

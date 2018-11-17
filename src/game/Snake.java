@@ -7,27 +7,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 
 public class Snake { // square eggs fill space much better
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	private static final double BOARDSIZEPX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
-	private static final double STEP = 12;
 	private ArrayList<Node> allPartsOfSnake;
 	private ArrayList<Node> allPartsOfAllSnakes;
 	private double x, y;
 	private Color color;
-	private String keyBoardChoice;
 	private Movement mov;
 	private String snakeName;
 	Group head;
 
-	public Snake(String snakeName, Position pos, Color color, Movement mov )
+	public Snake(String snakeName, Position pos, Color color)
 	{
 		this.snakeName = snakeName;
 		this.color = color;
@@ -88,8 +82,7 @@ public class Snake { // square eggs fill space much better
 		
 		translatePosition(head,0,0);
 		allPartsOfSnake.add(head);	
-		this.mov = mov;
-		
+	
 	}
 	
 	public ArrayList<Node> getAllParts() { return allPartsOfSnake; }
@@ -97,16 +90,7 @@ public class Snake { // square eggs fill space much better
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
 		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		if(mov instanceof IntelligentMovement) {
-			((IntelligentMovement) mov).allPartsOfAllSnakes = this.allPartsOfAllSnakes;
-			((IntelligentMovement) mov).headOfSnake = this.head;
-		}
-		else if(mov instanceof SuperIntelligentMovement) {
-			((SuperIntelligentMovement) mov).allPartsOfAllSnakes = this.allPartsOfAllSnakes;
-			((SuperIntelligentMovement) mov).headOfSnake = this.head;
-		}
-		Position currentPosition = new Position(x,y);
-		MovementConfig nextPosition = mov.nextPosition(head.getRotate(),currentPosition);
+		MovementConfig nextPosition = mov.nextPosition(head,new Position(x,y));
 		nodeMove(nextPosition);
 	}
 
@@ -175,6 +159,14 @@ public class Snake { // square eggs fill space much better
 	public String toString() {
 		return this.snakeName;
 	}
-	
+	public ArrayList<Node> getAllPartsOfAllSnakes(){
+		return this.allPartsOfAllSnakes;
+	}
+	public Group getHead(){
+		return this.head;
+	}
+	public void setMovement(Movement mov) {
+		this.mov = mov;
+	}
 	
 }

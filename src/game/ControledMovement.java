@@ -1,9 +1,6 @@
 package game;
 
-import java.util.ArrayList;
-
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 
 public class ControledMovement implements Movement {
@@ -11,7 +8,6 @@ public class ControledMovement implements Movement {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	
 	private KeyCode lastValidKeyCode;
-	private MovementConfig moveConfig;
 	private double headRotation; 
 	private Position lastPos;
 
@@ -42,8 +38,8 @@ public class ControledMovement implements Movement {
 		}
 		Keyboard.storeLastKeyCode(this.lastValidKeyCode);
 	}
-	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
-		this.headRotation = headRotation;
+	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
+		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		return KeyBoardControl(this.keyLEFT, this.keyRIGHT, this.keyUP, this.keyDOWN);
 	}

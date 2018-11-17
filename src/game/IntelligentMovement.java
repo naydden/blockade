@@ -11,14 +11,23 @@ import javafx.scene.shape.StrokeLineCap;
 
 public class IntelligentMovement implements Movement {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
+	private Snake snake;
 	
 	private double headRotation; 
 	private Position lastPos;
 	ArrayList<Node> allPartsOfAllSnakes;
 	Group headOfSnake;
+	
+	public IntelligentMovement(Snake snake) {
+		this.snake = snake;
+	}
 
-	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
-		this.headRotation = headRotation;
+	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
+		this.headOfSnake = head;
+		System.out.println(snake);
+		this.allPartsOfAllSnakes = snake.getAllPartsOfAllSnakes();
+		System.out.println(this.allPartsOfAllSnakes);
+		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		
 		Rectangle scout = addBody();

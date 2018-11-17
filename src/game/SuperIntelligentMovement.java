@@ -11,14 +11,20 @@ import javafx.scene.shape.StrokeLineCap;
 
 public class SuperIntelligentMovement implements Movement {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
-	
+	private Snake snake;
 	private double headRotation; 
 	private Position lastPos;
 	ArrayList<Node> allPartsOfAllSnakes;
 	Group headOfSnake;
 
-	public MovementConfig nextPosition (double headRotation, Position lastPosition) throws Exception {
-		this.headRotation = headRotation;
+	public SuperIntelligentMovement(Snake snake) {
+		this.snake = snake;
+	}
+	
+	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
+		this.headOfSnake = head;
+		this.allPartsOfAllSnakes = snake.getAllPartsOfAllSnakes();
+		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		
 		Rectangle scout = addBody();

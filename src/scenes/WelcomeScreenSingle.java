@@ -3,6 +3,7 @@ package scenes;
 import game.ControledMovement;
 import game.GameMain;
 import game.IntelligentMovement;
+import game.Movement;
 import game.RandomMovement;
 import game.SuperIntelligentMovement;
 import javafx.beans.value.ChangeListener;
@@ -28,14 +29,17 @@ import javafx.scene.text.Text;
 
 public class WelcomeScreenSingle extends Group {
 	GameMain listener;
+	boolean selectedMode0;
 	boolean selectedMode1;
-	boolean selectedMode2;
+	String modeMov0;
+	String modeMov1;
 	
 	public WelcomeScreenSingle(GameMain listener) {
 		this.listener = listener;
+		this.selectedMode0 = false;
 		this.selectedMode1 = false;
-		this.selectedMode2 = false;
-	
+
+		
 		// TEXT EFFECT
 		DropShadow ds = new DropShadow();
 		ds.setOffsetY(3.0f);
@@ -77,28 +81,9 @@ public class WelcomeScreenSingle extends Group {
 				new ChangeListener<String>() {
 				public void changed(ObservableValue<? extends String> ov, String oldvalue, String newvalue) {
 					setSelectedMode(1);
-					if(selectedMode1 && selectedMode2)
+					if(selectedMode0 && selectedMode1)
 						btnStart.setDisable(false);
-					switch (newvalue) {
-						case "Controlled ASDW":
-							listener.setMovement1( new ControledMovement("L"));
-							break;
-						case "Controlled ↑,↓,←,→":
-							listener.setMovement1( new ControledMovement("R"));
-							break;			
-						case "Random":
-							listener.setMovement1( new RandomMovement());
-							break;				
-						case "Intelligent":
-							listener.setMovement1 (new IntelligentMovement());
-							break;			
-						case "SuperIntelligent":
-							listener.setMovement1( new SuperIntelligentMovement());
-							break;
-						default:
-							listener.setMovement1( new ControledMovement("L"));
-							break;
-					}
+					setMovement(0,newvalue);
 				}
 		}
 		);
@@ -123,28 +108,9 @@ public class WelcomeScreenSingle extends Group {
 				new ChangeListener<String>() {
 				public void changed(ObservableValue<? extends String> ov, String oldvalue, String newvalue) {
 					setSelectedMode(2);
-					if(selectedMode1 && selectedMode2)
+					if(selectedMode0 && selectedMode1)
 						btnStart.setDisable(false);
-					switch (newvalue) {
-						case "Controlled ASDW":
-							listener.setMovement2(new ControledMovement("L"));
-							break;
-						case "Controlled ↑,↓,←,→":
-							listener.setMovement2(new ControledMovement("R"));
-							break;			
-						case "Random":
-							listener.setMovement2(new RandomMovement());
-							break;				
-						case "Intelligent":
-							listener.setMovement2(new IntelligentMovement());
-							break;			
-						case "SuperIntelligent":
-							listener.setMovement2(new SuperIntelligentMovement());
-							break;
-						default:
-							listener.setMovement2(new ControledMovement("L"));
-							break;
-					}
+					setMovement(1,newvalue);
 				}
 		}
 		);		
@@ -155,8 +121,14 @@ public class WelcomeScreenSingle extends Group {
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				listener.initializeSnake(snakeName.getText(),listener.getMovement1());
-				listener.initializeSnake(snakeName2.getText(),listener.getMovement2());
+				// snake initialization
+				listener.initializeSnake(0, snakeName.getText());
+				// snake movement definition
+				listener.getSnake(0).setMovement(getMovement(0,modeMov0));
+			
+				listener.initializeSnake(1, snakeName2.getText());
+				listener.getSnake(1).setMovement(getMovement(1,modeMov1));
+				
 				listener.gameScreen();
 			}
 		});
@@ -179,8 +151,30 @@ public class WelcomeScreenSingle extends Group {
 	}
 	public void setSelectedMode(int mode) {
 		if(mode == 1)
-			this.selectedMode1 = true;
+			this.selectedMode0 = true;
 		else
-			this.selectedMode2 = true;
+			this.selectedMode1 = true;
+	}
+	public void setMovement(int snake, String option) {
+		if(snake == 0)
+			this.modeMov0 = option;
+		else
+			this.modeMov1 = option;
+	}
+	public Movement getMovement(int snake, String option) {
+		switch (option) {
+		case "Controlled ASDW":
+			return  new ControledMovement("L");
+		case "Controlled ↑,↓,←,→":
+			return new ControledMovement("R");		
+		case "Random":
+			return new RandomMovement();			
+		case "Intelligent":
+			return new IntelligentMovement(listener.getSnake(snake));		
+		case "SuperIntelligent":
+			return new SuperIntelligentMovement(listener.getSnake(snake));
+		default:
+			return new ControledMovement("L");
+	}
 	}
 }
