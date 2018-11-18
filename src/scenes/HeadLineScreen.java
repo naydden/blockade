@@ -8,6 +8,12 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+/**
+ * Class with commonly used methods.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class HeadLineScreen extends Group {
 
 	public Text headLine() {

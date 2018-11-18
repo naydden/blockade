@@ -22,12 +22,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * When in single mode, this screen is used to define the name and the movement
+ * of each snake. Uses the Observable pattern to initialise the snakes.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class SingleScreen extends HeadLineScreen {
-	GameMain listener;
-	boolean selectedMode0;
-	boolean selectedMode1;
-	String modeMov0;
-	String modeMov1;
+	private GameMain listener;
+	private boolean selectedMode0;
+	private boolean selectedMode1;
+	private String modeMov0;
+	private String modeMov1;
 
 	public SingleScreen(GameMain listener) {
 		this.listener = listener;
@@ -106,11 +113,13 @@ public class SingleScreen extends HeadLineScreen {
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				/** Top left snake */
 				listener.initializeSnake(0, snakeName.getText());
 				listener.getSnake(0).setMovement(getMovement(0, modeMov0));
-
+				/** Bottom right snake */
 				listener.initializeSnake(1, snakeName2.getText());
 				listener.getSnake(1).setMovement(getMovement(1, modeMov1));
+
 				listener.setRole(Role.SINGLE);
 				listener.gameScreen();
 			}

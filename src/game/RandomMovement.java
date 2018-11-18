@@ -5,7 +5,8 @@ import java.util.Random;
 import javafx.scene.Group;
 
 /**
- * Random movement implementation. Just chooses between the possible directions randomly.
+ * Random movement implementation. Just chooses between the possible directions
+ * randomly.
  * 
  * @author Boyan Naydenov
  */
@@ -22,11 +23,12 @@ public class RandomMovement implements Movement {
 	public RandomMovement() {
 		this.randomChoice = new Random();
 	}
+
 	/**
 	 * Chooses the next direction randomly
 	 * 
-	 * @param head	head of the snake
-	 * @param lastPosition	current position
+	 * @param head         head of the snake
+	 * @param lastPosition current position
 	 * @return nextPosition wrapped in MovementConfig object
 	 * @throws Exception
 	 */
@@ -47,16 +49,17 @@ public class RandomMovement implements Movement {
 			return go(Direction.UP);
 
 	}
+
 	/**
-	 * Generates the nextPosition based on the given direction.
-	 * The next position is expressed as a MovementConfig object.
+	 * Generates the nextPosition based on the given direction. The next position is
+	 * expressed as a MovementConfig object.
 	 * 
-	 * The method uses current head rotation of the snake in order to
-	 * decide if the snake tries to go from where it comes. If that is
-	 * the case the method makes the snake continue in the same direction.
+	 * The method uses current head rotation of the snake in order to decide if the
+	 * snake tries to go from where it comes. If that is the case the method makes
+	 * the snake continue in the same direction.
 	 * 
-	 * @param dir	Desired direction
-	 * @return		nextPosition wrapped in MovementConfig object
+	 * @param dir Desired direction
+	 * @return nextPosition wrapped in MovementConfig object
 	 * @throws Exception
 	 */
 	public MovementConfig go(Direction dir) throws Exception {

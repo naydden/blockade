@@ -9,12 +9,16 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * Simple screen just to decide whether the program is going to be the server or
+ * the client.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class ClientServerScreen extends HeadLineScreen {
 
-	GameMain listener;
-
 	public ClientServerScreen(GameMain listener) {
-		this.listener = listener;
 
 		/**
 		 * Parameters definition

@@ -8,8 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Intelligent movement implementation. Uses the head surrounding cells
- * to decide randomly just between the free cells, if any.
+ * Intelligent movement implementation. Uses the head surrounding cells to
+ * decide randomly just between the free cells, if any.
  * 
  * @author Boyan Naydenov
  */
@@ -21,9 +21,9 @@ public class IntelligentMovement extends AutonomousMovement implements Movement 
 	private Snake snake;
 	/** Rotation of the head of the snake. */
 	private double headRotation;
-	/** Position before current movement*/
+	/** Position before current movement */
 	private Position lastPos;
-	/** Contains all the nodes that the snakes create.*/
+	/** Contains all the nodes that the snakes create. */
 	private ArrayList<Node> allPartsOfAllSnakes;
 	/** head node of the snake */
 	private Group headOfSnake;
@@ -34,13 +34,15 @@ public class IntelligentMovement extends AutonomousMovement implements Movement 
 	}
 
 	/**
-	 * 	Finds the free cell towards which to move. If 2, chooses randomly.
-	 *  If any cells is available chooses randomly as well.
+	 * Finds the free cell towards which to move. If 2, chooses randomly. If any
+	 * cells is available chooses randomly as well.
 	 * 
-	 * @param head			The head of the snake, since it is necessary to know its rotation. 
-	 * @param lastPosition	The current position of the head, used to locate the next position.
-	 * @return 				The object containing all the information of the next position.
-	 * @throws	Exception
+	 * @param head         The head of the snake, since it is necessary to know its
+	 *                     rotation.
+	 * @param lastPosition The current position of the head, used to locate the next
+	 *                     position.
+	 * @return The object containing all the information of the next position.
+	 * @throws Exception
 	 */
 	public MovementConfig nextPosition(Group head, Position lastPosition) throws Exception {
 		/** Gets the current context (current head and all the other nodes) */
@@ -59,8 +61,9 @@ public class IntelligentMovement extends AutonomousMovement implements Movement 
 		boolean occupiedW = false;
 
 		double Ndx, Ndy, Edx, Edy, Wdx, Wdy;
-		/** Definition of the offsets needed to check the surrounding cells
-		 * depending on the current orientation.
+		/**
+		 * Definition of the offsets needed to check the surrounding cells depending on
+		 * the current orientation.
 		 */
 		if (headRotation == 0) {
 			// North Direction
@@ -163,14 +166,17 @@ public class IntelligentMovement extends AutonomousMovement implements Movement 
 				return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 		}
 	}
+
 	/**
-	 * Translates scout node and obtains if it collides with some other part of any snake or wall.
-	 * @param scout		Scout node to investigate.
-	 * @param dx		X offset.
-	 * @param dy		Y offset.
-	 * @return	true if collision, false if not.
+	 * Translates scout node and obtains if it collides with some other part of any
+	 * snake or wall.
+	 * 
+	 * @param scout Scout node to investigate.
+	 * @param dx    X offset.
+	 * @param dy    Y offset.
+	 * @return true if collision, false if not.
 	 */
-	public  boolean checkDir(Rectangle scout, double dx, double dy) {
+	public boolean checkDir(Rectangle scout, double dx, double dy) {
 		scout.setTranslateX(headOfSnake.getTranslateX() + dx);
 		scout.setTranslateY(headOfSnake.getTranslateY() + dy);
 		return checkCollision(scout);

@@ -8,11 +8,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
+/**
+ * Main screen from which to decide in which mode it is going to be played ;
+ * SINGLE, SERVER or CLIENT.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class MainScreen extends HeadLineScreen {
-	GameMain listener;
 
 	public MainScreen(GameMain listener) {
-		this.listener = listener;
 
 		/**
 		 * Parameters definition
@@ -23,7 +28,7 @@ public class MainScreen extends HeadLineScreen {
 		modeBtnWrapper.setAlignment(Pos.CENTER);
 
 		Button btnSingle = new Button("Single Instance");
-		Button btnMultiplayer = new Button("Multi-instance (Reseau) ");
+		Button btnMultiplayer = new Button("Multi-instance");
 
 		VBox vbox = new VBox();
 

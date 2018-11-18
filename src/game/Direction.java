@@ -1,4 +1,5 @@
 package game;
+
 /**
  * Enumeration with the possible directions that the snake can take.
  * 

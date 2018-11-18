@@ -28,11 +28,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * When in client mode, screen to fill client snake info and join server. Uses
+ * the Observable pattern to initialise the snake.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class ClientScreen extends HeadLineScreen {
 
-	GameMain listener;
-	boolean selectedMode = false;
-	String modeMov;
+	private GameMain listener;
+	private boolean selectedMode = false;
+	private String modeMov;
 
 	public ClientScreen(GameMain listener) {
 		this.listener = listener;
@@ -96,10 +103,11 @@ public class ClientScreen extends HeadLineScreen {
 		btnJoin.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// snake initialization
+				/** Snake 0 is saved for the server snake */
 				listener.initializeSnake(0, "server");
+				/** Client snake */
 				listener.initializeSnake(1, snakeName.getText());
-				// snake movement definition
+				/** Snake movement definition. */
 				listener.getSnake(1).setMovement(getMovement(0, modeMov));
 				listener.setRole(Role.CLIENT);
 				try {

@@ -9,11 +9,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * Screen not used in the game. Left for future reference.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class WaitingScreen extends HeadLineScreen {
-	GameMain listener;
 
 	public WaitingScreen(GameMain listener, Role role) {
-		this.listener = listener;
 
 		/**
 		 * Parameters definition

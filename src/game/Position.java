@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Stores a 2D Cartesian coordinates X and Y.
- *  
+ * 
  * Implements Serializable in order to send through a stream.
  * 
  * @author Boyan Naydenov

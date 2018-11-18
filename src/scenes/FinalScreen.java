@@ -16,11 +16,15 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+/**
+ * Final screen showing the result of the game.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class FinalScreen extends Group {
-	GameMain listener;
 
 	public FinalScreen(GameMain listener, String message, StackPane root) {
-		this.listener = listener;
 
 		/**
 		 * Parameters definition

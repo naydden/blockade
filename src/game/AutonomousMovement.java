@@ -8,21 +8,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 
-public abstract class AutonomousMovement {
+public class AutonomousMovement {
 	/** Size of each step in px. */
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	/** Rotation of the head of the snake. */
 	protected double headRotation;
-	/** Position before current movement*/
+	/** Position before current movement */
 	protected Position lastPos;
-	/** Contains all the nodes that the snakes create.*/
+	/** Contains all the nodes that the snakes create. */
 	protected ArrayList<Node> allPartsOfAllSnakes;
 	/** head node of the snake */
 	protected Group headOfSnake;
-	
+
 	/**
 	 * Utility method to create a typical snake rectangle node
-	 * @return	same rectangle as the one used to build the snake.
+	 * 
+	 * @return same rectangle as the one used to build the snake.
 	 */
 	public Rectangle addBody() {
 		Rectangle body = new Rectangle(SIZE - 5, SIZE - 5, Color.AQUAMARINE);
@@ -33,12 +34,12 @@ public abstract class AutonomousMovement {
 		body.setStrokeLineCap(StrokeLineCap.ROUND);
 		return body;
 	}
-	
+
 	/**
 	 * Checks if block node collides with something.
 	 * 
-	 * @param block		Scout node.
-	 * @return	true if collision, false if not.
+	 * @param block Scout node.
+	 * @return true if collision, false if not.
 	 */
 	public boolean checkCollision(Node block) {
 		boolean collisionSnake = false;
@@ -60,11 +61,12 @@ public abstract class AutonomousMovement {
 
 		return collisionSnake || collisionWalls;
 	}
+
 	/**
 	 * Goes from Relative base to Absolute base depending on current direction.
 	 * 
 	 * @param headRotation
-	 * @return	nextPosition wrapped in MovementConfig object
+	 * @return nextPosition wrapped in MovementConfig object
 	 * @throws Exception
 	 */
 	public MovementConfig goLocal(double headRotation, Direction dir1, Direction dir2, Direction dir3, Direction dir4)
@@ -80,15 +82,15 @@ public abstract class AutonomousMovement {
 	}
 
 	/**
-	 * Generates the nextPosition based on the given direction.
-	 * The next position is expressed as a MovementConfig object.
+	 * Generates the nextPosition based on the given direction. The next position is
+	 * expressed as a MovementConfig object.
 	 * 
-	 * The method uses current head rotation of the snake in order to
-	 * decide if the snake tries to go from where it comes. If that is
-	 * the case the method makes the snake continue in the same direction.
+	 * The method uses current head rotation of the snake in order to decide if the
+	 * snake tries to go from where it comes. If that is the case the method makes
+	 * the snake continue in the same direction.
 	 * 
-	 * @param dir	Desired direction
-	 * @return		nextPosition wrapped in MovementConfig object
+	 * @param dir Desired direction
+	 * @return nextPosition wrapped in MovementConfig object
 	 * @throws Exception
 	 */
 

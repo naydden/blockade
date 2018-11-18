@@ -28,11 +28,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * When in server mode, screen to fill server snake info and create game. Uses
+ * the Observable pattern to initialise the snake.
+ * 
+ * @author Boyan Naydenov
+ *
+ */
 public class ServerScreen extends HeadLineScreen {
 
-	GameMain listener;
-	boolean selectedMode = false;
-	String modeMov;
+	private GameMain listener;
+	private boolean selectedMode = false;
+	private String modeMov;
 
 	public ServerScreen(GameMain listener) {
 		this.listener = listener;
@@ -97,8 +104,9 @@ public class ServerScreen extends HeadLineScreen {
 		btnCreate.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// snake initialization
+				/** snake initialisation */
 				listener.initializeSnake(0, snakeName.getText());
+				/** snake 1 is saved for the client snake */
 				listener.initializeSnake(1, "client");
 				// snake movement definition
 				listener.getSnake(0).setMovement(getMovement(0, modeMov));

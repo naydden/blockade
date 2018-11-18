@@ -4,9 +4,9 @@ import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 
 /**
- * Keyboard movement implementation. Allows both ASDW and arrow control.
- * The control is absolute and not relative to he orientation of the head.
- * This way is thought to be more user friendly.
+ * Keyboard movement implementation. Allows both ASDW and arrow control. The
+ * control is absolute and not relative to he orientation of the head. This way
+ * is thought to be more user friendly.
  * 
  * @author Boyan Naydenov
  */
@@ -17,10 +17,10 @@ public class ControlledMovement implements Movement {
 	private KeyCode lastValidKeyCode;
 	/** Rotation of the head of the snake */
 	private double headRotation;
-	/** Position before current movement*/
+	/** Position before current movement */
 	private Position lastPos;
 
-	/** The keys that are going to be used to control the snake*/
+	/** The keys that are going to be used to control the snake */
 	private KeyCode keyLEFT;
 	private KeyCode keyRIGHT;
 	private KeyCode keyUP;
@@ -50,16 +50,18 @@ public class ControlledMovement implements Movement {
 	}
 
 	/**
-	 * Returns a MovementConfig object containing the computed next position
-	 * so that the parent snake can consume it.
+	 * Returns a MovementConfig object containing the computed next position so that
+	 * the parent snake can consume it.
 	 * 
-	 * @param head			The head of the snake, since it is necessary to know its rotation. 
-	 * @param lastPosition	The current position of the head, used to locate the next position.
-	 * @return				The object containing all the information of the next position.
-	 * @throws Exception	
+	 * @param head         The head of the snake, since it is necessary to know its
+	 *                     rotation.
+	 * @param lastPosition The current position of the head, used to locate the next
+	 *                     position.
+	 * @return The object containing all the information of the next position.
+	 * @throws Exception
 	 */
 	public MovementConfig nextPosition(Group head, Position lastPosition) throws Exception {
-		
+
 		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		return KeyBoardControl(this.keyLEFT, this.keyRIGHT, this.keyUP, this.keyDOWN);
@@ -68,11 +70,11 @@ public class ControlledMovement implements Movement {
 	/**
 	 * Provides abstraction between keys and directions.
 	 * 
-	 * @param L	Designed key to go left.
-	 * @param R	Designed key to go right.
-	 * @param U	Designed key to go up.
-	 * @param D	Designed key to go down.
-	 * @return	The object containing all the information of the next position.
+	 * @param L Designed key to go left.
+	 * @param R Designed key to go right.
+	 * @param U Designed key to go up.
+	 * @param D Designed key to go down.
+	 * @return The object containing all the information of the next position.
 	 * @throws Exception
 	 */
 	private MovementConfig KeyBoardControl(KeyCode L, KeyCode R, KeyCode U, KeyCode D) throws Exception {
@@ -107,17 +109,17 @@ public class ControlledMovement implements Movement {
 	}
 
 	/**
-	 * Generates the nextPosition based on the given direction.
-	 * The next position is expressed as a MovementConfig object.
+	 * Generates the nextPosition based on the given direction. The next position is
+	 * expressed as a MovementConfig object.
 	 * 
-	 * The method uses current head rotation of the snake in order to
-	 * decide if the snake tries to go from where it comes. If that is
-	 * the case the method makes the snake continue in the same direction.
+	 * The method uses current head rotation of the snake in order to decide if the
+	 * snake tries to go from where it comes. If that is the case the method makes
+	 * the snake continue in the same direction.
 	 * 
-	 * @param dir	Desired direction
-	 * @param dirKey1	Key for desired direction (for instance W)
-	 * @param dirKey2	Opposite key of dirKey1   (for instance A)
-	 * @return			nextPosition wrapped in MovementConfig object
+	 * @param dir     Desired direction
+	 * @param dirKey1 Key for desired direction (for instance W)
+	 * @param dirKey2 Opposite key of dirKey1 (for instance A)
+	 * @return nextPosition wrapped in MovementConfig object
 	 * @throws Exception
 	 */
 	public MovementConfig go(Direction dir, KeyCode dirKey1, KeyCode dirKey2) throws Exception {

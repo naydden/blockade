@@ -25,23 +25,25 @@ import scenes.SingleScreen;
 import scenes.AuxScreens;
 
 /**
- * Main class of the game. Implements gameStep(),
- * controls the views by showing different scenes and
- * manages the client/server interaction.
+ * Main class of the game. Implements gameStep(), controls the views by showing
+ * different scenes and manages the client/server interaction.
  * 
  * @author Boyan Naydenov
  *
  */
 public class GameMain extends GameEngine {
-	/** State variable to define if single, client or server role.*/
+	/** State variable to define if single, client or server role. */
 	private Role role;
-	/** Contains all the nodes that the snakes create. Used by GameEngine to plot them.*/
+	/**
+	 * Contains all the nodes that the snakes create. Used by GameEngine to plot
+	 * them.
+	 */
 	private ArrayList<Node> allNodes;
-	/** Contains the two snakes.*/
+	/** Contains the two snakes. */
 	private List<Snake> snakes;
-	/** Contains the movements of each snake.*/
+	/** Contains the movements of each snake. */
 	private List<Movement> movements;
-	/** Root node containing the subnodes.*/
+	/** Root node containing the subnodes. */
 	private StackPane root;
 	/** NET utilities */
 	private Socket socketClient;
@@ -52,15 +54,12 @@ public class GameMain extends GameEngine {
 	private ObjectOutputStream outStoC;
 	private ObjectInputStream inSfromC;
 
-
 	public GameMain() {
 		/**
-		 * snakes and movements are in a fixed size array. 
-		 * Snake 0 is located at the top left corner while
-		 * Snake 1 is located at the bottom right corner.
+		 * snakes and movements are in a fixed size array. Snake 0 is located at the top
+		 * left corner while Snake 1 is located at the bottom right corner.
 		 * 
-		 * Movement 0 corresponds to snake 0
-		 * Movement 1 corresponds to snake 1
+		 * Movement 0 corresponds to snake 0 Movement 1 corresponds to snake 1
 		 */
 		this.snakes = Arrays.asList(new Snake[2]);
 		this.movements = Arrays.asList(new Movement[2]);
@@ -71,10 +70,12 @@ public class GameMain extends GameEngine {
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
+
 	/**
 	 * Generates a randomly coloured snake.
-	 * @param i	Snake 0 or Snake 1
-	 * @param name	Snake name
+	 * 
+	 * @param i    Snake 0 or Snake 1
+	 * @param name Snake name
 	 */
 	public void initializeSnake(int i, String name) {
 		double propX;
@@ -97,7 +98,7 @@ public class GameMain extends GameEngine {
 		Snake snake = new Snake(name, startPos, randomColor, i);
 		this.snakes.set(i, snake);
 	}
-	
+
 	/**
 	 * Wrapping method that calls the appropriate gameStep() depending on its role.
 	 */
@@ -117,11 +118,12 @@ public class GameMain extends GameEngine {
 		}
 		return allNodes;
 	}
+
 	/**
-	 *  Moves each snake and adds the newly generated nodes to allNodes 
-	 *  
-	 *  @throws	in case a Crash is detected, in order to stop the clock.
-	 *  */
+	 * Moves each snake and adds the newly generated nodes to allNodes
+	 * 
+	 * @throws in case a Crash is detected, in order to stop the clock.
+	 */
 	public void gameStepSingle() throws Exception {
 		for (Snake snake : snakes) {
 			if (snake != null)
@@ -136,26 +138,27 @@ public class GameMain extends GameEngine {
 				}
 			}
 		}
-		if (snakes.get(0).isCrashed() || snakes.get(1).isCrashed() )
+		if (snakes.get(0).isCrashed() || snakes.get(1).isCrashed())
 			throw new Exception("Crash");
 	}
+
 	/**
-	 *  Moves each snake and adds the newly generated nodes to allNodes. 
-	 *  If a crash is detected, it closes all the sockets.
-	 *  @param out	Output stream
-	 *  @param in	Input stream
-	 *  @throws		in case a Crash is detected, in order to stop the clock.
-	 *  */
+	 * Moves each snake and adds the newly generated nodes to allNodes. If a crash
+	 * is detected, it closes all the sockets.
+	 * 
+	 * @param out Output stream
+	 * @param in  Input stream
+	 * @throws in case a Crash is detected, in order to stop the clock.
+	 */
 	public void gameStepCS(ObjectOutputStream out, ObjectInputStream in) throws Exception {
 		try {
 			int ownedInt = role == Role.CLIENT ? 1 : 0;
 			int shownInt = role == Role.CLIENT ? 0 : 1;
-			/** 
-			 * owned and shown snake depend on the role.
-			 * To simplify, the server snake is always snake 0, 
-			 * (top left corner) and client server is always snake 
-			 * 1 (bottom right corner)
-			 * */
+			/**
+			 * owned and shown snake depend on the role. To simplify, the server snake is
+			 * always snake 0, (top left corner) and client server is always snake 1 (bottom
+			 * right corner)
+			 */
 			Snake owned = snakes.get(ownedInt);
 			Snake shown = snakes.get(shownInt);
 			owned.move(allNodes);
@@ -176,18 +179,19 @@ public class GameMain extends GameEngine {
 				}
 			}
 		} catch (Exception e) {
-			if(role == Role.CLIENT)
+			if (role == Role.CLIENT)
 				this.stopClient();
-			else if(role == Role.SERVER)
+			else if (role == Role.SERVER)
 				this.stopServer();
 			throw e;
 		}
 
 	}
+
 	/**
 	 * Starts server socket and streams and waits for connection.
 	 * 
-	 * @param port	
+	 * @param port
 	 * @throws IOException
 	 */
 	public void startServer(int port) throws IOException {
@@ -198,6 +202,7 @@ public class GameMain extends GameEngine {
 		this.inSfromC = new ObjectInputStream(this.socketServerAccept.getInputStream());
 		gameScreen();
 	}
+
 	/**
 	 * Starts client socket and streams in localhost
 	 * 
@@ -212,8 +217,10 @@ public class GameMain extends GameEngine {
 		this.inCfromS = new ObjectInputStream(this.socketClient.getInputStream());
 		gameScreen();
 	}
+
 	/**
 	 * Closes Server resources
+	 * 
 	 * @throws IOException
 	 */
 	public void stopServer() throws IOException {
@@ -230,18 +237,18 @@ public class GameMain extends GameEngine {
 	}
 
 	/**
-	 * Scenes methods. Used to change between different scenes
-	 * in order to provide a graphical UI.
+	 * Scenes methods. Used to change between different scenes in order to provide a
+	 * graphical UI.
 	 */
-	
+
 	public void welcomeScreen(StackPane root) {
-		/**Re-initializes snakes in order to restart game during runtime */
+		/** Re-initializes snakes in order to restart game during runtime */
 		this.snakes = Arrays.asList(new Snake[2]);
 		this.allNodes = new ArrayList<Node>();
 		this.root = root;
 		MainScreen ms = new MainScreen(this);
 		root.getChildren().setAll(ms);
-		/** Centers content.*/
+		/** Centers content. */
 		StackPane.setAlignment(root, Pos.CENTER);
 	}
 
@@ -272,8 +279,7 @@ public class GameMain extends GameEngine {
 		root.getChildren().setAll(fs);
 		StackPane.setAlignment(root, Pos.CENTER);
 	}
-	
-	
+
 	/**
 	 * Setters
 	 */

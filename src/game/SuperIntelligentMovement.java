@@ -7,18 +7,43 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Intelligent movement implementation. Uses the head surrounding cells and goes
+ * towards the direction with the biggest number of free cells.
+ * 
+ * @author Boyan Naydenov
+ */
 public class SuperIntelligentMovement extends AutonomousMovement implements Movement {
+	/** Size of each step in px. */
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
+	/** Snake that uses this movement. */
 	private Snake snake;
+	/** Rotation of the head of the snake. */
 	private double headRotation;
+	/** Position before current movement */
 	private Position lastPos;
-	ArrayList<Node> allPartsOfAllSnakes;
-	Group headOfSnake;
+	/** Contains all the nodes that the snakes create. */
+	private ArrayList<Node> allPartsOfAllSnakes;
+	/** head node of the snake */
+	private Group headOfSnake;
 
+	/** Creates an super-intelligent movement and associates it with a snake. */
 	public SuperIntelligentMovement(Snake snake) {
 		this.snake = snake;
 	}
 
+	/**
+	 * Finds the free cell towards which to move. It looks in the three surrounding
+	 * directions until it finds an obstacle. Goes towards the direction with the
+	 * most mount of free cells. In case of equality, chooses randomly.
+	 * 
+	 * @param head         The head of the snake, since it is necessary to know its
+	 *                     rotation.
+	 * @param lastPosition The current position of the head, used to locate the next
+	 *                     position.
+	 * @return The object containing all the information of the next position.
+	 * @throws Exception
+	 */
 	public MovementConfig nextPosition(Group head, Position lastPosition) throws Exception {
 		this.headOfSnake = head;
 		super.headOfSnake = head;
@@ -35,7 +60,10 @@ public class SuperIntelligentMovement extends AutonomousMovement implements Move
 		int freeW = 0;
 
 		double Ndx, Ndy, Edx, Edy, Wdx, Wdy;
-
+		/**
+		 * Definition of the offsets needed to check the surrounding cells depending on
+		 * the current orientation.
+		 */
 		if (headRotation == 0) {
 			// North Direction
 			Ndx = 0;
@@ -115,12 +143,14 @@ public class SuperIntelligentMovement extends AutonomousMovement implements Move
 				return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 		}
 	}
+
 	/**
-	 * Translates scout node and obtains if it collides with some other part of any snake or wall.
-	 * @param scout		Scout node to investigate.
-	 * @param dx		X offset.
-	 * @param dy		Y offset.
-	 * @return	true if collision, false if not.
+	 * Finds the number of free cells in each direction.
+	 * 
+	 * @param scout Scout node to investigate.
+	 * @param dx    X offset.
+	 * @param dy    Y offset.
+	 * @return true if collision, false if not.
 	 */
 	public int checkDir(Rectangle scout, double dx, double dy) {
 		int freeCells = 0;

@@ -127,6 +127,7 @@ public abstract class GameEngine extends Application implements Runnable {
 				message = "Snake " + getSnake(1).snakeName + " has crashed!";
 			else
 				message = "Invalid Game. Check code.";
+			// exits game scene and goes back to text scene to show result.
 			finalScreen(root, message);
 		}
 	}
