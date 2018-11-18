@@ -1,6 +1,6 @@
 package scenes;
 
-import game.ControledMovement;
+import game.ControlledMovement;
 import game.GameMain;
 import game.IntelligentMovement;
 import game.Movement;
@@ -74,7 +74,7 @@ public class SingleScreen extends HeadLineScreen {
 		TextField snakeName2 = new TextField();
 		snakeName2.setPromptText("Snake 2 Name");
 		ObservableList<String> options2 = FXCollections.observableArrayList(
-				"Controlled ASDW", "Controled ↑,↓,←,→",
+				"Controlled ASDW", "Controlled ↑,↓,←,→",
 				"Random", "Intelligent", "SuperIntelligent");
 		Text mode2 = new Text();
 		mode2.setText("Snake's mode:");
@@ -113,9 +113,7 @@ public class SingleScreen extends HeadLineScreen {
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// snake initialization
 				listener.initializeSnake(0, snakeName.getText());
-				// snake movement definition
 				listener.getSnake(0).setMovement(getMovement(0,modeMov0));
 			
 				listener.initializeSnake(1, snakeName2.getText());
@@ -149,9 +147,9 @@ public class SingleScreen extends HeadLineScreen {
 	public Movement getMovement(int snake, String option) {
 		switch (option) {
 		case "Controlled ASDW":
-			return  new ControledMovement("L");
+			return  new ControlledMovement("L");
 		case "Controlled ↑,↓,←,→":
-			return new ControledMovement("R");		
+			return new ControlledMovement("R");		
 		case "Random":
 			return new RandomMovement();			
 		case "Intelligent":
@@ -159,7 +157,7 @@ public class SingleScreen extends HeadLineScreen {
 		case "SuperIntelligent":
 			return new SuperIntelligentMovement(listener.getSnake(snake));
 		default:
-			return new ControledMovement("L");
+			return new ControlledMovement("L");
 	}
 	}
 }

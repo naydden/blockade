@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -17,10 +18,10 @@ import javafx.stage.Stage;
 public abstract class GameEngine extends Application implements Runnable {
 
 	/** Speed of the game */
-	static public final long DELAY_MS = 350L;
+	static public final long DELAY_MS = 250L;
 
 	/** Graphical window title */
-	static public String TITLE = "Game";
+	static public String TITLE = "BLOCKADE";
 
 	/** Background Color */
 	static public final Color BG_COLOR = Color.WHITE;
@@ -72,6 +73,7 @@ public abstract class GameEngine extends Application implements Runnable {
 		welcomeScreen(root);
 		// Show a graphical window with all the graph scene content
 		primaryStage.setScene(scene);
+		primaryStage.getIcons().add(new Image("file:snake.png"));
 		primaryStage.setTitle(TITLE);
 		primaryStage.setResizable(false);
 		primaryStage.show();
@@ -108,9 +110,16 @@ public abstract class GameEngine extends Application implements Runnable {
 			primaryStage.setTitle(TITLE);
 			primaryStage.setResizable(false);
 			primaryStage.show();
-			String snakeName = e.getMessage();
-			finalScreen(root,snakeName);
-			System.out.println(e);
+			String message = e.getMessage();
+			if(getSnake(0).isCrashed() && getSnake(1).isCrashed())
+				message = "Game nul. Both snakes crashed.";
+			else if(getSnake(0).isCrashed())
+				message = "Snake "+ getSnake(0).snakeName + " has crashed!";
+			else if(getSnake(1).isCrashed())
+				message = "Snake "+ getSnake(1).snakeName + " has crashed!";
+			else
+				message = "Invalid Game. Check code.";
+			finalScreen(root,message);
 		}
 	}
 
@@ -155,4 +164,6 @@ public abstract class GameEngine extends Application implements Runnable {
 	public abstract Collection<Node> gameStep() throws Exception;
 	public abstract void welcomeScreen(StackPane root);
 	public abstract void finalScreen(StackPane root,String snake);
+	public abstract Snake getSnake(int i);
+
 }

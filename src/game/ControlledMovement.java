@@ -3,7 +3,7 @@ package game;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 
-public class ControledMovement implements Movement {
+public class ControlledMovement implements Movement {
 	
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
 	
@@ -17,14 +17,14 @@ public class ControledMovement implements Movement {
 	private KeyCode keyUP;
 	private KeyCode keyDOWN;
 	
-	public ControledMovement(String KeyBoardChoice) {
+	public ControlledMovement(String KeyBoardChoice) {
 		switch (KeyBoardChoice) {
 			case "L":{
 				this.keyDOWN = KeyCode.S;
 				this.keyLEFT = KeyCode.A;
 				this.keyRIGHT = KeyCode.D;
 				this.keyUP = KeyCode.W;
-				this.lastValidKeyCode = KeyCode.W;
+				this.lastValidKeyCode = Keyboard.getLastKeyCodeL();
 				break;
 			}
 			case "R":{
@@ -32,7 +32,7 @@ public class ControledMovement implements Movement {
 				this.keyLEFT = KeyCode.LEFT;
 				this.keyRIGHT = KeyCode.RIGHT;
 				this.keyUP = KeyCode.UP;
-				this.lastValidKeyCode = KeyCode.UP;
+				this.lastValidKeyCode = Keyboard.getLastKeyCodeR();
 				break;
 			}
 		}
@@ -49,7 +49,7 @@ public class ControledMovement implements Movement {
 			last =  Keyboard.getLastKeyCodeL();
 		else
 			last =  Keyboard.getLastKeyCodeR();
-	
+
 		if( last.equals(L))
 			return go(Direction.LEFT,L,R);
 		else if(last.equals(U))

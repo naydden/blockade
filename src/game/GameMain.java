@@ -52,25 +52,37 @@ public class GameMain extends GameEngine {
 		Application.launch(args);
 	}
 	public void initializeSnake(int i, String name) {
-		Position startPos = new Position((new Random().nextInt((int) GRID_SIZE - 2) + 1) * 24, WINDOW_SIZE / 2);
+		double propX;
+		double propY;
+		
+		if(i==0) {
+			propX = 0.25;
+			propY = 0.25;
+		}
+		else {
+			propX = 0.75;
+			propY = 0.75;
+		}
+		
+		Position startPos = new Position(WINDOW_SIZE*propX, WINDOW_SIZE *propY);
 		Random rand = new Random();
 		float r = rand.nextFloat(); float g = rand.nextFloat(); float b = rand.nextFloat();
 		Color randomColor = Color.color(r,g,b);
-		Snake snake = new Snake(name, startPos, randomColor);
+		Snake snake = new Snake(name, startPos, randomColor, i);
 		this.snakes.set(i,snake);
 	}
 
 	public ArrayList<Node> gameStep() throws Exception {
-//		intercambio inicial de posiciones iiciales. Con esos datos la serpiente ya pude tirar, y envia los objetos
-//		la serpiente del otro lado puede usar estas posiciones para tomar su camino.
-//		move snake 1, receive move positions from snake 2(getAllParts), send positions after move of snke1
 		switch (role) {
 			case SINGLE:
 				gameStepSingle();
+				break;
 			case CLIENT:
-				gameStepClient();
+				gameStepCS(this.outCtoS,this.inCfromS);
+				break;
 			case SERVER:
-				gameStepServer();
+				gameStepCS(this.outStoC,this.inSfromC);
+				break;
 			default:
 				break;
 		}
@@ -121,6 +133,8 @@ public class GameMain extends GameEngine {
 		for (Snake snake : snakes) {
 			if(snake != null)
 				snake.move(allNodes);
+			if(snake.isCrashed())
+				throw new Exception("Crash");
 		}
 		for (Snake snake : snakes) {
 			if(snake != null) {
@@ -132,57 +146,38 @@ public class GameMain extends GameEngine {
 			}
 		}
 	}
-	public void gameStepClient() throws Exception{
-       
-		for (Snake snake : snakes) {
-			if(snake != null)
-				snake.move(allNodes);
-		}
-		for (Snake snake : snakes) {
-			if(snake != null) {
-				ArrayList<Node> allAddedNodes = snake.getAllParts();
-				this.outCtoS.writeObject(snake.getAllParts());
-				this.outCtoS.flush();
-				
-				ArrayList<Node> serverSnakeParts = (ArrayList<Node>) this.inCfromS.readObject();
-				
-				for (Node x : allAddedNodes) {
-					if (!allNodes.contains(x))
-						allNodes.add(x);
-				}
-				for (Node x : serverSnakeParts) {
-					if (!allNodes.contains(x))
-						allNodes.add(x);
-				}
-			}
-		}
-	}
-	public void gameStepServer() throws Exception{
-	       
-			for (Snake snake : snakes) {
-				if(snake != null)
-					snake.move(allNodes);
-			}
+	public void gameStepCS(ObjectOutputStream out, ObjectInputStream in) throws Exception{
+		try {
+			int ownedInt = role == Role.CLIENT ? 1 : 0;
+			int shownInt = role == Role.CLIENT ? 0 : 1; 
+			Snake owned = snakes.get(ownedInt);	
+			Snake shown = snakes.get(shownInt);
+			owned.move(allNodes);
+			out.writeObject(owned.nextPosition);
+			out.flush();
+			MovementConfig nextPosition = (MovementConfig) in.readObject();
+			shown.controlledMove(allNodes, nextPosition);
+					
+			if(owned.isCrashed() || shown.isCrashed())
+				throw new Exception("Crash");
 			for (Snake snake : snakes) {
 				if(snake != null) {
-					ArrayList<Node> allAddedNodes = snake.getAllParts();
-					this.outStoC.writeObject(snake.getAllParts());
-					this.outStoC.flush();
-					
-					ArrayList<Node> clientSnakeParts = (ArrayList<Node>) this.inSfromC.readObject();
-					
+					ArrayList<Node> allAddedNodes = snake.getAllParts();			
 					for (Node x : allAddedNodes) {
 						if (!allNodes.contains(x))
 							allNodes.add(x);
 					}
-					for (Node x : clientSnakeParts) {
-						if (!allNodes.contains(x))
-							allNodes.add(x);
-					}
 				}
 			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			this.stopClient();
+			this.stopServer();
+			throw e;
+		}
+
 	}
-	
 	public void startServer(int port) throws IOException {
         ServerSocket s = new ServerSocket(port);
         this.socketServer = s.accept();      
@@ -206,7 +201,7 @@ public class GameMain extends GameEngine {
 	}
 	public void stopClient() throws IOException {
 		this.outCtoS.close();
-		this.inSfromC.close();;
+		this.inCfromS.close();;
 		this.socketClient.close();
 	}
 	/**

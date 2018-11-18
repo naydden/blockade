@@ -1,6 +1,10 @@
 package game;
 
-public class MovementConfig {
+import java.io.Serializable;
+
+public class MovementConfig implements Serializable {
+	private static final long serialVersionUID = 1L;
+	 
 	Position position;
 	double Rot1;
 	double Rot2;

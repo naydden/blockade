@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.function.UnaryOperator;
 
-import game.ControledMovement;
+import game.ControlledMovement;
 import game.GameMain;
 import game.IntelligentMovement;
 import game.Movement;
@@ -104,6 +104,7 @@ public class ServerScreen extends HeadLineScreen {
 			public void handle(ActionEvent event) {
 				// snake initialization
 				listener.initializeSnake(0, snakeName.getText());
+				listener.initializeSnake(1, "client");
 				// snake movement definition
 				listener.getSnake(0).setMovement(getMovement(0,modeMov));
 				listener.setRole(Role.SERVER);
@@ -138,9 +139,9 @@ public class ServerScreen extends HeadLineScreen {
 	public Movement getMovement(int snake, String option) {
 		switch (option) {
 		case "Controlled ASDW":
-			return  new ControledMovement("L");
+			return  new ControlledMovement("L");
 		case "Controlled ↑,↓,←,→":
-			return new ControledMovement("R");		
+			return new ControlledMovement("R");		
 		case "Random":
 			return new RandomMovement();			
 		case "Intelligent":
@@ -148,7 +149,7 @@ public class ServerScreen extends HeadLineScreen {
 		case "SuperIntelligent":
 			return new SuperIntelligentMovement(listener.getSnake(snake));
 		default:
-			return new ControledMovement("L");
+			return new ControlledMovement("L");
 	}
 	}
 }

@@ -24,9 +24,7 @@ public class IntelligentMovement implements Movement {
 
 	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
 		this.headOfSnake = head;
-		System.out.println(snake);
 		this.allPartsOfAllSnakes = snake.getAllPartsOfAllSnakes();
-		System.out.println(this.allPartsOfAllSnakes);
 		this.headRotation = head.getRotate();
 		this.lastPos = lastPosition;
 		

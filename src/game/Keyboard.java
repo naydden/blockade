@@ -6,7 +6,7 @@ public class Keyboard {
 
 	/** Last-pressed KeyCode */
 	private static KeyCode lastKeyCodeR = KeyCode.UP;
-	private static KeyCode lastKeyCodeL = KeyCode.W;
+	private static KeyCode lastKeyCodeL = KeyCode.RIGHT;
 
 	/** You shall not create a Keyboard object */
 	private Keyboard() { }

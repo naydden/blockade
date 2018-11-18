@@ -7,6 +7,7 @@ import javafx.scene.shape.*;
 import java.util.ArrayList;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 
 public class Snake {
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
@@ -16,10 +17,12 @@ public class Snake {
 	private double x, y;
 	private Color color;
 	private Movement mov;
-	private String snakeName;
+	String snakeName;
+	private boolean crashed;
 	Group head;
+	MovementConfig nextPosition;
 
-	public Snake(String snakeName, Position pos, Color color)
+	public Snake(String snakeName, Position pos, Color color, int direction)
 	{
 		this.snakeName = snakeName;
 		this.color = color;
@@ -27,24 +30,45 @@ public class Snake {
 		this.y = pos.getY();
 		this.allPartsOfSnake = new ArrayList<Node>();
 		this.allPartsOfAllSnakes = new ArrayList<Node>();
+		this.crashed = false;
 		
 //		Tail of the snake. Only one and with fixed position
+		if(direction == 0) {
+			Double[] snakeCoord = new Double[]{
+		            -3.0, 1.5,
+		            -3.0, SIZE-4.5,
+		            -SIZE*0.9, SIZE/2 
+		    };		
+			initSnake(snakeCoord,-SIZE,90,1);
+			Keyboard.storeLastKeyCode(KeyCode.D);
+		}
+		else {
+			Double[] snakeCoord = new Double[]{
+		            0.0, 1.5,
+		            0.0, SIZE-3.5,
+		            SIZE*0.9, SIZE/2
+		    };		
+			initSnake(snakeCoord,SIZE,-90,2);
+			Keyboard.storeLastKeyCode(KeyCode.RIGHT);
+		}
+	}
+	
+	public ArrayList<Node> getAllParts() { return allPartsOfSnake; }
+	
+	public void initSnake(Double[] tailCoor, double transX, double rotateHead, double transTail) {
+		// tail of snake
 		Polygon tail = new Polygon();
-		tail.getPoints().addAll(new Double[]{
-	            0.0, 2*(SIZE),
-	            SIZE-5, 2*(SIZE),
-	            (SIZE-5)/2, 3*(SIZE) 
-	    });
+		tail.getPoints().addAll(tailCoor);
 		tail.setFill(Color.BLACK);
-		translatePosition(tail,0,0);
+		translatePosition(tail,transTail*transX,0);
 		allPartsOfSnake.add(tail);
 
-//		First element of snake body
+		// First element of snake body
 		Rectangle fBody = addBody();
-		translatePosition(fBody, 0, SIZE);
+		translatePosition(fBody, transX, 0);
 		allPartsOfSnake.add(fBody);
 		
-//		Head of the snake
+		// Head of the snake
 		head = new Group();
 		Path headShape = new Path();
 		
@@ -75,24 +99,25 @@ public class Snake {
 		headShape.setStroke(Color.BLACK);
 		headShape.setStrokeWidth(3);
 		headShape.setStrokeLineCap(StrokeLineCap.ROUND);
-		
+		head.setRotate(rotateHead);
 		head.getChildren().add(headShape);
 		
 		translatePosition(head,0,0);
-		allPartsOfSnake.add(head);	
-	
+		allPartsOfSnake.add(head);
 	}
-	
-	public ArrayList<Node> getAllParts() { return allPartsOfSnake; }
-	
 	public void move(ArrayList<Node> allPartsOfAllSnakes) throws Exception
 	{
 		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
-		MovementConfig nextPosition = mov.nextPosition(head,new Position(x,y));
-		nodeMove(nextPosition);
+		this.nextPosition = mov.nextPosition(head,new Position(x,y));
+		nodeMove(this.nextPosition);
+	}
+	public void controlledMove(ArrayList<Node> allPartsOfAllSnakes, MovementConfig nextPos) throws Exception
+	{
+		this.allPartsOfAllSnakes = allPartsOfAllSnakes;
+		nodeMove(nextPos);
 	}
 
-	private void nodeMove(MovementConfig mov) throws Exception {
+	private void nodeMove(MovementConfig mov) {
 	
 		this.x = mov.position.getX();
 		this.y = mov.position.getY();
@@ -114,8 +139,9 @@ public class Snake {
 		}
 		allPartsOfSnake.add(body);
 		
-		if(isCollision(head))
-			throw new Exception("Snake "+this.snakeName+" has crashed!");
+		if(isCollision(head)) {
+			this.crashed = true;
+		}
 	}
 	
 	private Rectangle addBody() {
@@ -166,5 +192,6 @@ public class Snake {
 	public void setMovement(Movement mov) {
 		this.mov = mov;
 	}
+	public boolean isCrashed() { return this.crashed; }
 	
 }
