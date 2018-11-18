@@ -24,6 +24,7 @@ public class HeadLineScreen extends Group {
 		welcomeText.setFill(Color.BLUE);
 		return welcomeText;
 	}
+
 	public Text author() {
 		Text author = new Text();
 		author.setText("Boyan Naydenov");

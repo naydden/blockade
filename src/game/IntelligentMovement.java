@@ -5,115 +5,157 @@ import java.util.Random;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
 
-public class IntelligentMovement implements Movement {
+/**
+ * Intelligent movement implementation. Uses the head surrounding cells
+ * to decide randomly just between the free cells, if any.
+ * 
+ * @author Boyan Naydenov
+ */
+
+public class IntelligentMovement extends AutonomousMovement implements Movement {
+	/** Size of each step in px. */
 	private static final double SIZE = GameEngine.ELEMENT_SIZE;
+	/** Snake that uses this movement. */
 	private Snake snake;
-	
-	private double headRotation; 
+	/** Rotation of the head of the snake. */
+	private double headRotation;
+	/** Position before current movement*/
 	private Position lastPos;
-	ArrayList<Node> allPartsOfAllSnakes;
-	Group headOfSnake;
-	
+	/** Contains all the nodes that the snakes create.*/
+	private ArrayList<Node> allPartsOfAllSnakes;
+	/** head node of the snake */
+	private Group headOfSnake;
+
+	/** Creates an intelligent movement and associates it with a snake. */
 	public IntelligentMovement(Snake snake) {
 		this.snake = snake;
 	}
 
-	public MovementConfig nextPosition (Group head, Position lastPosition) throws Exception {
+	/**
+	 * 	Finds the free cell towards which to move. If 2, chooses randomly.
+	 *  If any cells is available chooses randomly as well.
+	 * 
+	 * @param head			The head of the snake, since it is necessary to know its rotation. 
+	 * @param lastPosition	The current position of the head, used to locate the next position.
+	 * @return 				The object containing all the information of the next position.
+	 * @throws	Exception
+	 */
+	public MovementConfig nextPosition(Group head, Position lastPosition) throws Exception {
+		/** Gets the current context (current head and all the other nodes) */
 		this.headOfSnake = head;
+		super.headOfSnake = head;
 		this.allPartsOfAllSnakes = snake.getAllPartsOfAllSnakes();
+		super.allPartsOfAllSnakes = this.allPartsOfAllSnakes;
 		this.headRotation = head.getRotate();
+		super.headRotation = this.headRotation;
 		this.lastPos = lastPosition;
-		
+		super.lastPos = this.lastPos;
+
 		Rectangle scout = addBody();
 		boolean occupiedN = false;
 		boolean occupiedE = false;
 		boolean occupiedW = false;
-		
-		double Ndx,Ndy,Edx,Edy,Wdx,Wdy;
-		
-		if(headRotation == 0) {
-			// North Direction
-			Ndx = 0; Ndy = -SIZE; Edx = SIZE; Edy = 0; Wdx = -SIZE;	Wdy = 0;		
-		}
-		else if(headRotation == 180) {
-			// South Direction
-			Ndx = 0; Ndy = SIZE; Edx = -SIZE; Edy = 0; Wdx = SIZE;	Wdy = 0;
-		}
-		else if(headRotation == 90) {
-			// East Direction
-			Ndx = SIZE; Ndy = 0; Edx = 0; Edy = SIZE; Wdx = 0; Wdy = -SIZE;
-		}
-		else if(headRotation == -90) {
-			// West Direction
-			Ndx = -SIZE; Ndy = 0; Edx = 0; Edy = -SIZE; Wdx = 0; Wdy = SIZE;
-		}
-		else {
-			// North Direction
-			Ndx = 0; Ndy = -SIZE; Edx = SIZE; Edy = 0; Wdx = -SIZE;	Wdy = 0;
-		}
-		
 
+		double Ndx, Ndy, Edx, Edy, Wdx, Wdy;
+		/** Definition of the offsets needed to check the surrounding cells
+		 * depending on the current orientation.
+		 */
+		if (headRotation == 0) {
+			// North Direction
+			Ndx = 0;
+			Ndy = -SIZE;
+			Edx = SIZE;
+			Edy = 0;
+			Wdx = -SIZE;
+			Wdy = 0;
+		} else if (headRotation == 180) {
+			// South Direction
+			Ndx = 0;
+			Ndy = SIZE;
+			Edx = -SIZE;
+			Edy = 0;
+			Wdx = SIZE;
+			Wdy = 0;
+		} else if (headRotation == 90) {
+			// East Direction
+			Ndx = SIZE;
+			Ndy = 0;
+			Edx = 0;
+			Edy = SIZE;
+			Wdx = 0;
+			Wdy = -SIZE;
+		} else if (headRotation == -90) {
+			// West Direction
+			Ndx = -SIZE;
+			Ndy = 0;
+			Edx = 0;
+			Edy = -SIZE;
+			Wdx = 0;
+			Wdy = SIZE;
+		} else {
+			// North Direction
+			Ndx = 0;
+			Ndy = -SIZE;
+			Edx = SIZE;
+			Edy = 0;
+			Wdx = -SIZE;
+			Wdy = 0;
+		}
+		/** Checks if the surrounding cells are occupied */
 		occupiedN = checkDir(scout, Ndx, Ndy);
 		occupiedE = checkDir(scout, Edx, Edy);
 		occupiedW = checkDir(scout, Wdx, Wdy);
-	
+
 		Random myRand = new Random();
 		int randomInteger = myRand.nextInt(2);
-		if(occupiedN) {
-			if(occupiedE)
-				if(occupiedW)
+
+		if (occupiedN) {
+			if (occupiedE)
+				if (occupiedW)
 					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 				else
 					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
-			else
-				if(occupiedW)
+			else if (occupiedW)
+				return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
+			else {
+				if (randomInteger == 0)
 					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
-				else {
-					if (randomInteger == 0) 
-						return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
-					else
-						return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
-				}		
-		}
-		else if(occupiedE) {
-			if(occupiedN)
-				if(occupiedW)
+				else
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
+			}
+		} else if (occupiedE) {
+			if (occupiedN)
+				if (occupiedW)
 					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 				else
 					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
-			else
-				if(occupiedW)
+			else if (occupiedW)
+				return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
+			else {
+				if (randomInteger == 0)
+					return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
+				else
 					return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
-				else {
-					if (randomInteger == 0) 
-						return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
-					else
-						return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
-				}		
-		}
-		else if(occupiedW) {
-			if(occupiedN)
-				if(occupiedE)
+			}
+		} else if (occupiedW) {
+			if (occupiedN)
+				if (occupiedE)
 					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
 				else
 					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
-			else
-				if(occupiedE)
+			else if (occupiedE)
+				return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
+			else {
+				if (randomInteger == 0)
+					return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
+				else
 					return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
-				else {
-					if (randomInteger == 0) 
-						return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
-					else
-						return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
-				}		
-		}
-		else {
+			}
+		} else {
 			int randomInt = myRand.nextInt(3);
-			if (randomInt == 0) 
+			if (randomInt == 0)
 				return goLocal(headRotation, Direction.UP, Direction.LEFT, Direction.RIGHT, Direction.DOWN);
 			else if (randomInt == 1)
 				return goLocal(headRotation, Direction.RIGHT, Direction.UP, Direction.DOWN, Direction.LEFT);
@@ -121,94 +163,17 @@ public class IntelligentMovement implements Movement {
 				return goLocal(headRotation, Direction.LEFT, Direction.DOWN, Direction.UP, Direction.RIGHT);
 		}
 	}
-	public boolean checkDir(Rectangle scout, double dx, double dy) {
-		scout.setTranslateX(headOfSnake.getTranslateX()+dx);
-		scout.setTranslateY(headOfSnake.getTranslateY()+dy);
+	/**
+	 * Translates scout node and obtains if it collides with some other part of any snake or wall.
+	 * @param scout		Scout node to investigate.
+	 * @param dx		X offset.
+	 * @param dy		Y offset.
+	 * @return	true if collision, false if not.
+	 */
+	public  boolean checkDir(Rectangle scout, double dx, double dy) {
+		scout.setTranslateX(headOfSnake.getTranslateX() + dx);
+		scout.setTranslateY(headOfSnake.getTranslateY() + dy);
 		return checkCollision(scout);
 	}
-	/**
-	 * Set of methods to go from Relative base to Absolute base
-	 * @param headRotation
-	 * @return
-	 * @throws Exception 
-	 */
-	public MovementConfig goLocal(double headRotation, Direction dir1, Direction dir2, Direction dir3, Direction dir4) throws Exception {
-		if(headRotation == 0)
-			return go(dir1);
-		else if(headRotation == -90)
-			return go(dir2);
-		else if(headRotation == 90)
-			return go(dir3);
-		else
-			return go(dir4);
-	}
-	
-	public boolean checkCollision(Node block) {
-		boolean collisionSnake = false;
-		boolean collisionWalls = false;
-		double boardSizePX = GameEngine.GRID_SIZE * GameEngine.ELEMENT_SIZE;
-		
-		// check snakes
-		for (Node node : allPartsOfAllSnakes) {
-		      if (block.getBoundsInParent().intersects(node.getBoundsInParent()) ||
-		    		  block.getBoundsInParent().contains(node.getBoundsInParent()) ||
-		    		  node.getBoundsInParent().contains(block.getBoundsInParent()))  {
-		    	  collisionSnake = true;
-			      }
-		}
-		
-		// check walls
-		collisionWalls = (block.getTranslateX() >= boardSizePX || block.getTranslateX()  < 0 || block.getTranslateY()  >= boardSizePX || block.getTranslateY()  < 0) ? true : false;
-		
-		return collisionSnake || collisionWalls;
-	}
-	
-	private Rectangle addBody() {
-		Rectangle body = new Rectangle(SIZE-5, SIZE-5, Color.AQUAMARINE);
-		body.setArcWidth(SIZE/2);
-		body.setArcHeight(SIZE/2);
-		body.setStroke(Color.BLACK);
-		body.setStrokeWidth(4);
-		body.setStrokeLineCap(StrokeLineCap.ROUND);
-		return body;
-	}
-	
-	public MovementConfig go(Direction dir) throws Exception {
-		switch(dir) {
-			case UP:{
-				if(this.headRotation == 180)
-					return new MovementConfig(-90, 90, 0, -SIZE, 0, 
-							new Position(lastPos.getX(),lastPos.getY()+SIZE));
-				else
-					return new MovementConfig(-90, 90, 0, SIZE, 0,
-							new Position(lastPos.getX(),lastPos.getY()-SIZE));
-			}
-			case DOWN: {
-				if(this.headRotation == 0)
-					return new MovementConfig(-90, 90, 0, SIZE, 0, 
-							new Position(lastPos.getX(),lastPos.getY()-SIZE));
-				else
-					return new MovementConfig(-90, 90, 0, -SIZE, 180,
-							new Position(lastPos.getX(),lastPos.getY()+SIZE));
-			}
-			case LEFT: {
-				if(this.headRotation == 90)
-					return new MovementConfig(0, 180, -SIZE, 0, 0,
-							new Position(lastPos.getX()+SIZE,lastPos.getY()));
-				else
-					return new MovementConfig(0, 180, SIZE, 0, -90,
-							new Position(lastPos.getX()-SIZE,lastPos.getY()));
-			}
-			case RIGHT: {
-				if(this.headRotation == -90)
-					return new MovementConfig(0, 180, SIZE, 0, 90,
-							new Position(lastPos.getX()-SIZE,lastPos.getY()));
-				else
-					return new MovementConfig(0, 180, -SIZE, 0, 90,
-							new Position(lastPos.getX()+SIZE,lastPos.getY()));	
-			}
-			default:
-				throw new Exception("Specified direction is not valid!");
-		}
-	}
+
 }

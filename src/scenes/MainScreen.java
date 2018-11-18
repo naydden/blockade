@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 
 public class MainScreen extends HeadLineScreen {
 	GameMain listener;
-	
+
 	public MainScreen(GameMain listener) {
 		this.listener = listener;
 
@@ -30,7 +30,7 @@ public class MainScreen extends HeadLineScreen {
 		vbox.setSpacing(10);
 		vbox.setPadding(new Insets(5));
 		vbox.setAlignment(Pos.CENTER);
-		
+
 		/**
 		 * Listeners definition
 		 */
@@ -46,7 +46,7 @@ public class MainScreen extends HeadLineScreen {
 				listener.welcomeSubScreen(AuxScreens.CLIENTSERVER);
 			}
 		});
-		
+
 		/**
 		 * Attaching objects in layouts
 		 */
@@ -54,6 +54,5 @@ public class MainScreen extends HeadLineScreen {
 		vbox.getChildren().addAll(headLine(), modeBtnWrapper, author());
 		this.getChildren().add(vbox);
 	}
-	
 
 }

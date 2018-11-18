@@ -33,7 +33,7 @@ public class ServerScreen extends HeadLineScreen {
 	GameMain listener;
 	boolean selectedMode = false;
 	String modeMov;
-	
+
 	public ServerScreen(GameMain listener) {
 		this.listener = listener;
 
@@ -55,32 +55,29 @@ public class ServerScreen extends HeadLineScreen {
 		Text snakeNameLabel = new Text();
 		snakeNameLabel.setText("Snake Name:");
 		TextField snakeName = new TextField();
-		ObservableList<String> options = FXCollections.observableArrayList(
-				"Controlled ASDW", "Controlled ↑,↓,←,→",
+		ObservableList<String> options = FXCollections.observableArrayList("Controlled ASDW", "Controlled ↑,↓,←,→",
 				"Random", "Intelligent", "SuperIntelligent");
 		Text mode1 = new Text();
 		mode1.setText("Choose your mode:");
 		ComboBox<String> comboBoxSnake1 = new ComboBox<>(options);
-		
+
 		VBox snakeConfigWrapperVertical2 = new VBox();
 		snakeConfigWrapperVertical2.setSpacing(10);
 		snakeConfigWrapperVertical2.setPadding(new Insets(5));
 		snakeConfigWrapperVertical2.setAlignment(Pos.CENTER);
 
-
 		Text port = new Text();
 		port.setText("Port number for your server: ");
 		TextField serverPort = new TextField();
 		UnaryOperator<Change> integerFilter = change -> {
-		    String input = change.getText();
-		    if (input.matches("[0-9]*")) { 
-		        return change;
-		    }
-		    return null;
+			String input = change.getText();
+			if (input.matches("[0-9]*")) {
+				return change;
+			}
+			return null;
 		};
 		serverPort.setTextFormatter(new TextFormatter<String>(integerFilter));
 
-		
 		VBox vbox = new VBox();
 
 		vbox.setSpacing(10);
@@ -89,16 +86,14 @@ public class ServerScreen extends HeadLineScreen {
 		/**
 		 * Listeners definition
 		 */
-		comboBoxSnake1.getSelectionModel().selectedItemProperty().addListener(
-				new ChangeListener<String>() {
-				public void changed(ObservableValue<? extends String> ov, String oldvalue, String newvalue) {
-					setSelectedMode();
-					if(selectedMode)
-						btnCreate.setDisable(false);
-					setMovement(newvalue);
-				}
-		}
-		);
+		comboBoxSnake1.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			public void changed(ObservableValue<? extends String> ov, String oldvalue, String newvalue) {
+				setSelectedMode();
+				if (selectedMode)
+					btnCreate.setDisable(false);
+				setMovement(newvalue);
+			}
+		});
 		btnCreate.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -106,20 +101,16 @@ public class ServerScreen extends HeadLineScreen {
 				listener.initializeSnake(0, snakeName.getText());
 				listener.initializeSnake(1, "client");
 				// snake movement definition
-				listener.getSnake(0).setMovement(getMovement(0,modeMov));
+				listener.getSnake(0).setMovement(getMovement(0, modeMov));
 				listener.setRole(Role.SERVER);
-				listener.welcomeSubScreen(AuxScreens.WAITING);
 				try {
 					listener.startServer(Integer.parseInt(serverPort.getText()));
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Please, provide a valid port number.");
 				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Unknown host.");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Server cannot be created as the socket is in use.");
 				}
 			}
 		});
@@ -128,28 +119,35 @@ public class ServerScreen extends HeadLineScreen {
 		 * Attaching objects in layouts
 		 */
 		snakeConfigWrapperVertical2.getChildren().addAll(port, serverPort, btnCreate);
-		snakeConfigWrapperVertical.getChildren().addAll(snakeNameLabel,snakeName, mode1, comboBoxSnake1);
+		snakeConfigWrapperVertical.getChildren().addAll(snakeNameLabel, snakeName, mode1, comboBoxSnake1);
 		snakeConfigWrapper.getChildren().addAll(snakeConfigWrapperVertical, snakeConfigWrapperVertical2);
 
 		vbox.getChildren().addAll(headLine(), snakeConfigWrapper, author());
 		this.getChildren().add(vbox);
 	}
-	public void setSelectedMode() {this.selectedMode = true;	}
-	public void setMovement(String option) { this.modeMov = option; }
+
+	public void setSelectedMode() {
+		this.selectedMode = true;
+	}
+
+	public void setMovement(String option) {
+		this.modeMov = option;
+	}
+
 	public Movement getMovement(int snake, String option) {
 		switch (option) {
 		case "Controlled ASDW":
-			return  new ControlledMovement("L");
+			return new ControlledMovement("L");
 		case "Controlled ↑,↓,←,→":
-			return new ControlledMovement("R");		
+			return new ControlledMovement("R");
 		case "Random":
-			return new RandomMovement();			
+			return new RandomMovement();
 		case "Intelligent":
-			return new IntelligentMovement(listener.getSnake(snake));		
+			return new IntelligentMovement(listener.getSnake(snake));
 		case "SuperIntelligent":
 			return new SuperIntelligentMovement(listener.getSnake(snake));
 		default:
 			return new ControlledMovement("L");
-	}
+		}
 	}
 }

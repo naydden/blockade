@@ -10,12 +10,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ClientServerScreen extends HeadLineScreen {
-	
+
 	GameMain listener;
-	
+
 	public ClientServerScreen(GameMain listener) {
 		this.listener = listener;
-	
+
 		/**
 		 * Parameters definition
 		 */
@@ -23,19 +23,19 @@ public class ClientServerScreen extends HeadLineScreen {
 		vbox.setSpacing(10);
 		vbox.setPadding(new Insets(5));
 		vbox.setAlignment(Pos.CENTER);
-		
+
 		HBox btnWrapper = new HBox();
 		btnWrapper.setSpacing(10);
 		btnWrapper.setPadding(new Insets(5));
 		btnWrapper.setAlignment(Pos.CENTER);
-				
+
 		Button btnClient = new Button("Client");
 		Button btnServer = new Button("Server");
-		
+
 		/**
 		 * Listeners definition
 		 */
-		
+
 		btnClient.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -48,14 +48,14 @@ public class ClientServerScreen extends HeadLineScreen {
 				listener.welcomeSubScreen(AuxScreens.SERVER);
 			}
 		});
-		
+
 		/**
 		 * Attaching objects in layouts
 		 */
 		btnWrapper.getChildren().addAll(btnClient, btnServer);
-		vbox.getChildren().addAll(headLine(),btnWrapper, author());
+		vbox.getChildren().addAll(headLine(), btnWrapper, author());
 		this.getChildren().addAll(vbox);
-		
+
 	}
 
 }

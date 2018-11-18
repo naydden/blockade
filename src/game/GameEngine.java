@@ -15,10 +15,17 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * Engine of the Game, i.e., periodic timer to move the snakes.
+ * 
+ * @author ISAE-SUPAERPO
+ * @author Boyan Naydenov
+ */
+
 public abstract class GameEngine extends Application implements Runnable {
 
 	/** Speed of the game */
-	static public final long DELAY_MS = 250L;
+	static public final long DELAY_MS = 180L;
 
 	/** Graphical window title */
 	static public String TITLE = "BLOCKADE";
@@ -38,14 +45,14 @@ public abstract class GameEngine extends Application implements Runnable {
 	/** Root of the Java FX scene graph containing all the elements to display */
 	private StackPane root;
 	private Group rootGame;
-	
+
 	protected Scene scene;
 	private Scene game;
 	protected Stage primaryStage;
-	
+
 	/** The timer for scheduling next game step */
 	private Timer timer;
-	
+
 	/**
 	 * Initialize the graphical display.
 	 *
@@ -61,7 +68,7 @@ public abstract class GameEngine extends Application implements Runnable {
 		// create the scene graph
 		scene = new Scene(root, WINDOW_SIZE, WINDOW_SIZE, BG_COLOR);
 		game = new Scene(rootGame, WINDOW_SIZE, WINDOW_SIZE, BG_COLOR);
-		
+
 		// add a KeyEvent listener to the scene
 		game.addEventHandler(KeyEvent.KEY_PRESSED, event -> Keyboard.storeLastKeyCode(event.getCode()));
 
@@ -106,25 +113,24 @@ public abstract class GameEngine extends Application implements Runnable {
 			rootGame.getChildren().setAll(gameStep());
 			timer.schedule(new GameTimerTask(this), DELAY_MS);
 		} catch (Exception e) {
+			// Changing scene to text scene, coming from the Game scene.
 			primaryStage.setScene(scene);
 			primaryStage.setTitle(TITLE);
 			primaryStage.setResizable(false);
 			primaryStage.show();
-			String message = e.getMessage();
-			if(getSnake(0).isCrashed() && getSnake(1).isCrashed())
+			String message;
+			if (getSnake(0).isCrashed() && getSnake(1).isCrashed())
 				message = "Game nul. Both snakes crashed.";
-			else if(getSnake(0).isCrashed())
-				message = "Snake "+ getSnake(0).snakeName + " has crashed!";
-			else if(getSnake(1).isCrashed())
-				message = "Snake "+ getSnake(1).snakeName + " has crashed!";
+			else if (getSnake(0).isCrashed())
+				message = "Snake " + getSnake(0).snakeName + " has crashed!";
+			else if (getSnake(1).isCrashed())
+				message = "Snake " + getSnake(1).snakeName + " has crashed!";
 			else
 				message = "Invalid Game. Check code.";
-			finalScreen(root,message);
+			finalScreen(root, message);
 		}
 	}
 
-
-	
 	public void gameScreen() {
 		rootGame.getChildren().clear();
 		primaryStage.setScene(game);
@@ -148,13 +154,10 @@ public abstract class GameEngine extends Application implements Runnable {
 		// allowing the timers on two different computers to roughly synchronize when
 		// exchanging messages.
 		timer.schedule(new GameTimerTask(this), DELAY_MS);
-		
+
 	}
 
-
-
 	/**
-	 * Implement your own gameStep method for your game.
 	 * 
 	 * @return a Collection of Node that will form the new JavaFX graph scene. All
 	 *         theses nodes will be displayed on screen, except if their coordinates
@@ -162,8 +165,11 @@ public abstract class GameEngine extends Application implements Runnable {
 	 * @throws Exception
 	 */
 	public abstract Collection<Node> gameStep() throws Exception;
+
 	public abstract void welcomeScreen(StackPane root);
-	public abstract void finalScreen(StackPane root,String snake);
+
+	public abstract void finalScreen(StackPane root, String snake);
+
 	public abstract Snake getSnake(int i);
 
 }

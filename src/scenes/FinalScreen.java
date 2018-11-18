@@ -18,10 +18,10 @@ import javafx.scene.text.Text;
 
 public class FinalScreen extends Group {
 	GameMain listener;
-	
-	public FinalScreen(GameMain listener, String message,	StackPane root) {
+
+	public FinalScreen(GameMain listener, String message, StackPane root) {
 		this.listener = listener;
-		
+
 		/**
 		 * Parameters definition
 		 */
@@ -30,22 +30,22 @@ public class FinalScreen extends Group {
 		// Setting font to the text
 		text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
 		text.setFill(Color.RED);
-		
+
 		Text author = new Text();
 		author.setText("Boyan Naydenov");
 		// Setting font to the text
 		author.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
 		author.setFill(Color.BLACK);
-		
+
 		Button buttonStartAgain = new Button("Play Again");
 		Button buttonExit = new Button("Exit");
-		
+
 		VBox vbox = new VBox();
 
 		vbox.setSpacing(10);
 		vbox.setPadding(new Insets(5));
 		vbox.setAlignment(Pos.CENTER);
-		
+
 		/**
 		 * Listeners definition
 		 */
@@ -62,7 +62,6 @@ public class FinalScreen extends Group {
 				listener.welcomeScreen(root);
 			}
 		});
-
 
 		/**
 		 * Attaching objects in layouts
