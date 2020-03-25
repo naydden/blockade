@@ -11,4 +11,4 @@ A git repository has been used to keep track of the changes. For the versions av
 
 ## Author
 
-* **Boyan Naydenov** - [naydden](https://github.com/naydde)
+* **Boyan Naydenov** - [naydden](https://github.com/naydden)
